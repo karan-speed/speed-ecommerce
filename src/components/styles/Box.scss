@@ -1,0 +1,29 @@
+.MuiBox-root {
+  &.section-wrapper {
+    height: 100%;
+  }
+  &.section-header-wrapper {
+    padding: 20px 35px;
+  }
+  &.box-container {
+    padding: 24px;
+  }
+  &.action-btn-wrapper {
+    position: absolute;
+    right: 35px;
+    top: 99px;
+  }
+
+  &.detail-wrapper {
+    display: table-cell;
+    padding: 18px 30px 100px 40px;
+    width: 1080px;
+
+    .header-content {
+      margin-top: 20px;
+    }
+    .details-content {
+      margin-top: 65px;
+    }
+  }
+}

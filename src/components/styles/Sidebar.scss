@@ -1,0 +1,22 @@
+@use "../../assets/default.scss" as *;
+.sidebar-container {
+  display: flex;
+  height: 100vh;
+  .sidebar-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 57px);
+    position: fixed;
+    .MuiDrawer-paper {
+      border-right: 1px solid #f2f5f7;
+      height: 100%;
+      position: relative;
+      width: 250px;
+      height: 100%;
+      .main-menu-item {
+        margin-bottom: 6px;
+        padding: 0;
+      }
+    }
+  }
+}

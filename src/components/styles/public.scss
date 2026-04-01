@@ -1,0 +1,46 @@
+.main-wrapper-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  .ecommerce-root-container {
+    display: flex;
+    height: 100%;
+    margin: 70px 0 0 0;
+    .section-container {
+      flex: 1;
+      flex-grow: 1;
+      width: calc(100% - 250px);
+      .main-logo-login {
+        display: flex;
+        justify-content: center;
+      }
+      .container-layout {
+        display: flex;
+        justify-content: center;
+        .signin-signup-container-layout {
+          background: #fff;
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+          height: auto;
+          padding: 40px;
+          width: 510px;
+        }
+        .common-grid-wrapper {
+          display: flex;
+          flex-direction: column;
+          letter-spacing: normal;
+          line-height: normal;
+          margin: 54px 10px 58px;
+        }
+      }
+    }
+  }
+}
+.app-root {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  .app-root-container {
+    display: flex;
+    height: 100%;
+  }
+}

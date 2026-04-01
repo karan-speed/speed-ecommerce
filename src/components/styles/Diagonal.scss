@@ -1,0 +1,22 @@
+.vector-diagonal-div {
+  background-color: #041f61;
+  clip-path: polygon(0 0, 100% 0, 100% 63%, 0 100%);
+  grid-column-start: 1;
+  grid-row-start: 1;
+  height: 800px;
+}
+.vector-diagonal-sub-div {
+  background-color: #9babfd;
+  clip-path: polygon(0 85%, 100% 0, 100% 8%, 0 100%);
+  grid-column-start: 1;
+  grid-row-start: 1;
+  height: 350px;
+  margin-top: 503px;
+  opacity: 0.4;
+}
+.overlay-container {
+  grid-column-start: 1;
+  grid-row-start: 1;
+  width: 100%;
+  z-index: 99;
+}
