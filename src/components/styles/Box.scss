@@ -1,4 +1,10 @@
 .MuiBox-root {
+  &.image-input-wrapper {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
   &.section-wrapper {
     height: 100%;
   }

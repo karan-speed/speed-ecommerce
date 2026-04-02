@@ -10,7 +10,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 import InfoIcon from "@mui/icons-material/Info";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-
+import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -212,6 +212,7 @@ export const buttonIcons = {
   profile: <AccountCircleIcon />,
   category: <GridViewIcon />,
   settings: <SettingsIcon />,
+  dropdown: <ArrowDropDownRoundedIcon />,
   horizontalThreeDots: (
     <MoreHorizIcon
       sx={{

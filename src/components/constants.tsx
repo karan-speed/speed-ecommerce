@@ -235,12 +235,12 @@ export const categoryColumns = [
   {
     key: "createdAt",
     label: "Created on",
-    render: (row: any) => new Date(row.createdAt).toLocaleDateString(),
+    render: (row: any) => new Date(row.created_at).toLocaleDateString(),
   },
   {
     key: "updatedAt",
     label: "Updated on",
-    render: (row: any) => new Date(row.updatedAt).toLocaleDateString(),
+    render: (row: any) => new Date(row.updated_at).toLocaleDateString(),
   },
 ];
 
@@ -263,12 +263,12 @@ export const productAllDetailColumns: ColumnProps[] = [
         {
           label: "Date Created",
           key: "createdAt",
-          render: (row: any) => new Date(row.createdAt).toLocaleDateString(),
+          render: (row: any) => new Date(row.created_at).toLocaleDateString(),
         },
         {
           label: "Date Updated",
           key: "updatedAt",
-          render: (row: any) => new Date(row.updatedAt).toLocaleDateString(),
+          render: (row: any) => new Date(row.updated_at).toLocaleDateString(),
         },
       ],
     },
@@ -332,17 +332,17 @@ export const productColumns = [
   {
     key: "visiblity",
     label: "Status",
-    render: (row: any) => (row.visibility ? "Available" : "Archived"),
+    render: (row: any) => (row.visiblity ? "Available" : "Archived"),
   },
   {
     key: "createdAt",
     label: "Created on",
-    render: (row: any) => new Date(row.createdAt).toLocaleDateString(),
+    render: (row: any) => new Date(row.created_at).toLocaleDateString(),
   },
   {
     key: "updatedAt",
     label: "Updated on",
-    render: (row: any) => new Date(row.updatedAt).toLocaleDateString(),
+    render: (row: any) => new Date(row.updated_at).toLocaleDateString(),
   },
 ];
 

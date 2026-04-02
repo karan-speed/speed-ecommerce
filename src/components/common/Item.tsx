@@ -16,7 +16,7 @@ export default function Item({ item, expanded, setExpanded }: ItemProps) {
   if (item.type === "accordion") {
     return (
       <List>
-        <Accordian setExpanded={setExpanded} expanded={expanded} item={item} />
+        {/* <Accordian setExpanded={setExpanded} expanded={expanded} item={item} /> */}
       </List>
     );
   }

@@ -44,8 +44,8 @@ function ProductDetails() {
   const config = productAllDetailColumns[0];
   const detailsData = {
     visiblity: product?.visiblity as boolean,
-    createdAt: product?.createdAt as string,
-    updatedAt: product?.updatedAt as string,
+    created_at: product?.created_at as string,
+    updated_at: product?.updated_at as string,
   };
   const mediaData = {
     images: product?.images as ProductImage[],

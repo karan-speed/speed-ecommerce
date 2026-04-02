@@ -5,7 +5,7 @@ import type { ColumnProps, Product } from "../../types";
 
 interface DetailsSectionProps {
   config: ColumnProps["details"];
-  data: Pick<Product, "visiblity" | "createdAt" | "updatedAt">;
+  data: Pick<Product, "visiblity" | "created_at" | "updated_at">;
 }
 interface MediaSectionProps {
   config: ColumnProps["images"];

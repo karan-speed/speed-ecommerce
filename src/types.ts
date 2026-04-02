@@ -61,8 +61,8 @@ export interface Product {
   thumbnail: string;
   spotlight: boolean;
   visiblity: boolean;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TextProps extends TypographyProps {
@@ -138,8 +138,8 @@ export type MenuItem = {
 };
 export interface ItemProps {
   item: MenuItem;
-  expanded: string | false;
-  setExpanded: (val: string | false) => void;
+  expanded?: string | false;
+  setExpanded?: (val: string | false) => void;
 }
 export interface IProtectRoute {
   allowRoles: "USER" | "ADMIN";
@@ -153,4 +153,11 @@ export interface PageModuleProps {
   onCreate?: () => void;
   onUpdate?: (item: any) => void;
   renderDetails?: (item: any) => void;
+}
+export interface CategoryResponse {
+  id: string;
+  name: string;
+  visiblity: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -38,3 +38,4 @@ export const lastNameId = "last_name";
 export const phoneNumberId = "phone_number";
 export const emailId = "email";
 export const passwordId = "password";
+export const addImages = "Add Images";
