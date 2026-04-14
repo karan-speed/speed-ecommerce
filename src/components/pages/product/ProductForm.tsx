@@ -26,7 +26,12 @@ import {
   type productSchema,
 } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { updateProduct } from "../../../redux/features/product/product.slice";
+import {
+  addProduct,
+  setProduct,
+  setProducts,
+  updateProduct,
+} from "../../../redux/features/product/product.slice";
 import {
   hideLoader,
   showLoader,
@@ -36,6 +41,7 @@ import { setCategories } from "../../../redux/features/category/category.slice";
 interface IProductFormProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess: () => void;
   initialData?: IProductGetResponse | null;
   isEdit?: boolean;
 }
@@ -43,6 +49,7 @@ interface IProductFormProps {
 export default function ProductForm({
   isOpen,
   onClose,
+  onSuccess,
   initialData,
   isEdit = false,
 }: IProductFormProps) {
@@ -85,7 +92,8 @@ export default function ProductForm({
         data: product,
         isPrivate: true,
       });
-      dispatch(updateProduct(data));
+      dispatch(addProduct(data));
+      onSuccess();
     } catch (error) {
       console.error(error);
     } finally {
@@ -113,6 +121,7 @@ export default function ProductForm({
       });
 
       dispatch(updateProduct(data));
+      onSuccess();
     } catch (error) {
       console.error(error);
     } finally {

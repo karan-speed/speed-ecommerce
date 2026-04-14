@@ -40,8 +40,12 @@ export const phoneNumberId = "phone_number";
 export const emailId = "email";
 export const passwordId = "password";
 export const addImages = "Add Images";
-export const archiveDialogText =
-  "Archiving will hide this product from new purchases. Are you sure you want to archive this product?";
+export const dialogText = {
+  archive:
+    "Archiving will hide this product from new purchases. Are you sure you want to archive this product?",
+  delete:
+    "Deleting will permanently remove this product and it cannot be recovered. Are you sure you want to delete this product?",
+};
 export const CATEGORY_REQUIRED_MESSAGE = "Category is required";
 export const THUMBNAIL_REQUIRED_MESSAGE = "Thumbnail is required";
 export const NAME_REQUIRED_MESSAGE = "Name is required";

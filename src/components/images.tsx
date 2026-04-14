@@ -18,6 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 export const vector =
   import.meta.env.VITE_APP_IMAGE_ICON_DEV_URL + "/app/vector.png";
 export const logo =
@@ -229,6 +230,7 @@ export const buttonIcons = {
   archive: <ArchiveIcon sx={{ color: "#2a67ff", marginLeft: "8px" }} />,
   unarchive: <UnarchiveIcon />,
   edit: <EditIcon sx={{ color: "#2a67ff", marginLeft: "8px" }} />,
+  delete: <DeleteIcon sx={{ color: "#2a67ff", marginLeft: "8px" }} />,
   horizontalThreeDots: (
     <MoreHorizIcon
       tabIndex={0}
