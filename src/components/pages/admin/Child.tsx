@@ -1,13 +1,16 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import Text from "../../common/Text";
 type State = {
-  count: number;
+  login: () => void;
 };
-function Child() {
+function Child({ login }: State) {
   console.log("render child");
+  useEffect(() => {
+    login();
+  }, [login]);
   return (
     <>
-      <Text mr={4}>Child</Text>
+      <Text mr={4}>{}</Text>
     </>
   );
 }

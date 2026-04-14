@@ -20,13 +20,16 @@ import { buttonIcons } from "../../images";
 import SelectData from "../../common/SelectData";
 import {
   mapProductResponseToForm,
-  type Category,
   type IProductForm,
-  type IProductGetResponse,
+  type TCategoryList,
+  type TProduct,
   type productSchema,
 } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { updateProduct } from "../../../redux/features/product/product.slice";
+import {
+  addProduct,
+  updateProduct,
+} from "../../../redux/features/product/product.slice";
 import {
   hideLoader,
   showLoader,
@@ -36,13 +39,15 @@ import { setCategories } from "../../../redux/features/category/category.slice";
 interface IProductFormProps {
   isOpen: boolean;
   onClose: () => void;
-  initialData?: IProductGetResponse | null;
+  onSuccess: () => void;
+  initialData?: TProduct | null;
   isEdit?: boolean;
 }
 
 export default function ProductForm({
   isOpen,
   onClose,
+  onSuccess,
   initialData,
   isEdit = false,
 }: IProductFormProps) {
@@ -53,7 +58,7 @@ export default function ProductForm({
   const handleGetCategory = async () => {
     try {
       dispatch(showLoader());
-      const data = await CallAPIInterface<Category[]>({
+      const data = await CallAPIInterface<TCategoryList[]>({
         method: "GET",
         url: "/categories",
         isPrivate: true,
@@ -79,13 +84,14 @@ export default function ProductForm({
         thumbnail: values.thumbnail,
         images: values.images,
       };
-      const data = await CallAPIInterface<IProductGetResponse>({
+      const data = await CallAPIInterface<TProduct>({
         method: "POST",
         url: "/products",
         data: product,
         isPrivate: true,
       });
-      dispatch(updateProduct(data));
+      dispatch(addProduct(data));
+      onSuccess();
     } catch (error) {
       console.error(error);
     } finally {
@@ -105,7 +111,7 @@ export default function ProductForm({
         thumbnail: values.thumbnail,
         images: values.images,
       };
-      const data = await CallAPIInterface<IProductGetResponse>({
+      const data = await CallAPIInterface<TProduct>({
         method: "PATCH",
         url: `/products/${initialData?.id}`,
         data: product,
@@ -113,6 +119,7 @@ export default function ProductForm({
       });
 
       dispatch(updateProduct(data));
+      onSuccess();
     } catch (error) {
       console.error(error);
     } finally {

@@ -15,7 +15,7 @@ import {
   MediaSection,
   ThumbnailSection,
 } from "../../common/Section";
-import type { IProductGetResponse } from "../../../types";
+import type { TProduct } from "../../../types";
 import { setProduct } from "../../../redux/features/product/product.slice";
 import PageLoader from "../../common/PageLoader";
 
@@ -31,7 +31,7 @@ function ProductDetails() {
       if (id) {
         setLoading(true);
         dispatch(showLoader());
-        const data = await CallAPIInterface<IProductGetResponse>({
+        const data = await CallAPIInterface<TProduct>({
           method: "GET",
           url: `/products/${id}`,
         });

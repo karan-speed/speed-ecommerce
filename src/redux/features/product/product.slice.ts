@@ -1,9 +1,9 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { IProductGetResponse, Products } from "../../../types";
+import type { TProduct, TProductsList } from "../../../types";
 
 interface ProductState {
-  list: Products[];
-  selectedProduct: IProductGetResponse | null;
+  list: TProductsList[];
+  selectedProduct: TProduct | null;
 }
 
 const initialState: ProductState = {
@@ -15,21 +15,25 @@ const products = createSlice({
   name: "products",
   initialState,
   reducers: {
-    setProducts: (state, action: PayloadAction<Products[]>) => {
+    addProduct: (state, action: PayloadAction<TProduct>) => {
+      state.list.push(action.payload);
+    },
+
+    setProducts: (state, action: PayloadAction<TProductsList[]>) => {
       state.list = action.payload;
     },
 
-    setProduct: (state, action: PayloadAction<IProductGetResponse>) => {
+    setProduct: (state, action: PayloadAction<TProduct>) => {
       state.selectedProduct = action.payload;
     },
 
-    updateProduct: (state, action: PayloadAction<IProductGetResponse>) => {
+    updateProduct: (state, action: PayloadAction<TProduct>) => {
       const updated = action.payload;
-
-      state.selectedProduct = updated;
+      state.list = state.list.map((p) => (p.id === updated.id ? updated : p));
     },
   },
 });
 
-export const { setProducts, setProduct, updateProduct } = products.actions;
+export const { setProducts, setProduct, updateProduct, addProduct } =
+  products.actions;
 export const productReducer = products.reducer;
