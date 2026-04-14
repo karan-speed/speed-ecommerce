@@ -9,7 +9,7 @@ import type { ICategoryGetResponse } from "../../../types";
 import { setCategories } from "../../../redux/features/category/category.slice";
 import PageLoader from "../../common/PageLoader";
 
-function Category() {
+function Categories() {
   const [value, setValue] = useState("all");
   const [isCreateClicked, setisCreateClicked] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -94,4 +94,4 @@ function Category() {
   );
 }
 
-export default Category;
+export default Categories;

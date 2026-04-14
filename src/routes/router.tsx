@@ -6,12 +6,12 @@ import ProtectRoute from "../components/pages/ProtectRoute";
 import Home from "../components/pages/users/Home";
 import { useAppSelector } from "../redux/hooks";
 import Dashboard from "../components/pages/admin/Dashboard";
-import Category from "../components/pages/category/Category";
 import Products from "../components/pages/product/Products";
 import ProductDetails from "../components/pages/product/ProductDetails";
 import CategoryDetails from "../components/pages/category/CategoryDetails";
 import Admin from "../components/pages/admin/Admin";
 import Memo from "../components/pages/admin/Memo";
+import Categories from "../components/pages/category/Categories";
 
 function EcommerceRouter() {
   const { access_token, user } = useAppSelector((state) => state.auth);
@@ -42,7 +42,7 @@ function EcommerceRouter() {
           <Route path="/temperory" element={<Memo />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/categories" element={<Category />} />
+          <Route path="/categories" element={<Categories />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/categories/:id" element={<CategoryDetails />} />
