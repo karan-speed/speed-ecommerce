@@ -13,6 +13,9 @@
     font-size: 15px;
     color: $darkIndigo;
   }
+  &.Mui-selected {
+    background-color: #f7fafc;
+  }
   &.Mui-focused {
     outline: 3px solid $outlineBlue;
   }

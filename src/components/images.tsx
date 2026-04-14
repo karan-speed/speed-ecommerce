@@ -1,3 +1,5 @@
+import ArchiveIcon from "@mui/icons-material/Archive";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import EmailIcon from "@mui/icons-material/Email";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -14,6 +16,8 @@ import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
+import EditIcon from "@mui/icons-material/Edit";
 export const vector =
   import.meta.env.VITE_APP_IMAGE_ICON_DEV_URL + "/app/vector.png";
 export const logo =
@@ -200,6 +204,14 @@ const SettingsIcon = () => {
     </>
   );
 };
+
+export const DropdownIcon = (props: any) => {
+  return (
+    <>
+      <ArrowDropDownRoundedIcon className={props.className} />
+    </>
+  );
+};
 export const buttonIcons = {
   google: <img src={googleIcon} height={20} width={20} alt="google-icon" />,
   email: <EmailIcon />,
@@ -213,16 +225,24 @@ export const buttonIcons = {
   category: <GridViewIcon />,
   settings: <SettingsIcon />,
   dropdown: <ArrowDropDownRoundedIcon />,
+  admin: <SupervisorAccountIcon />,
+  archive: <ArchiveIcon sx={{ color: "#2a67ff", marginLeft: "8px" }} />,
+  unarchive: <UnarchiveIcon />,
+  edit: <EditIcon sx={{ color: "#2a67ff", marginLeft: "8px" }} />,
   horizontalThreeDots: (
     <MoreHorizIcon
+      tabIndex={0}
       sx={{
-        ml: "8px",
-        fontSize: "24px",
+        width: "30px",
+        height: "30px",
+        margin: "0 0 0 8px",
         "&:focus": {
           borderRadius: "4px",
           outline: "3px solid #bfd1ff",
         },
+        cursor: "pointer",
       }}
+      className="horizontal-dot-icon"
     />
   ),
   copyIcon: (
@@ -230,10 +250,7 @@ export const buttonIcons = {
       sx={{
         ml: "8px",
         fontSize: "16px",
-        "&:focus": {
-          borderRadius: "4px",
-          outline: "3px solid #bfd1ff",
-        },
+        cursor: "pointer",
       }}
     />
   ),

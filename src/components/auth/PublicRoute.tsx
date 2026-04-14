@@ -5,7 +5,7 @@ import { DiagonalDiv } from "../constants";
 import { vector } from "../images";
 import "../styles/public.scss";
 import { logoWhite } from "../images";
-import { useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../redux/hooks";
 
 function PublicRoute() {
   const access_token = useAppSelector((state) => state.auth.access_token);

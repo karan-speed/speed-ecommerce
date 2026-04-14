@@ -1,32 +1,40 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { ProductResponse } from "../../../types";
-
-export interface ICategory {
-  id: string;
-  name: string;
-  created_at: string;
-  updated_at: string;
-}
+import type { Category, CategoryDetailsType } from "../../../types";
 
 interface ICategoryState {
-  categories: ICategory[];
+  categories: Category[];
+  categoryDetails: CategoryDetailsType;
 }
 
 const initialState: ICategoryState = {
   categories: [],
+  categoryDetails: {
+    id: "",
+    name: "",
+    total_products: 0,
+    total_stock: 0,
+    average_price: 0,
+    active_products: 0,
+    spotlighted_products: 0,
+    products: [],
+  },
 };
 
 const category = createSlice({
   name: "category",
   initialState,
   reducers: {
-    setCategories: (state, action: PayloadAction<ICategory[]>) => {
+    setCategories: (state, action: PayloadAction<Category[]>) => {
       state.categories = action.payload;
     },
-    categoryAdded: (state, action: PayloadAction<ICategory>) => {
+    setCategoryDetails: (state, action: PayloadAction<CategoryDetailsType>) => {
+      state.categoryDetails = action.payload;
+    },
+
+    categoryAdded: (state, action: PayloadAction<Category>) => {
       state.categories.push(action.payload);
     },
-    categoryUpdated: (state, action: PayloadAction<ICategory>) => {
+    categoryUpdated: (state, action: PayloadAction<Category>) => {
       const index = state.categories.findIndex(
         (category) => category.id === action.payload.id,
       );
@@ -44,6 +52,7 @@ const category = createSlice({
 export const {
   setCategories,
   categoryAdded,
+  setCategoryDetails,
   categoryUpdated,
   categoryRemoved,
 } = category.actions;

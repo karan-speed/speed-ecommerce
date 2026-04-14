@@ -26,6 +26,7 @@ export const register = "Register";
 export const profileText = "Profile";
 export const logoutText = "Logout";
 export const EMAIL_REQUIRED_MESSAGE = "Email Address is required";
+
 export const PASSWORD_REQUIRED_MESSAGE = "Password is required";
 export const PASSWORD_LENGTH_MESSAGE =
   "password should be minimum 8 characters";
@@ -39,3 +40,16 @@ export const phoneNumberId = "phone_number";
 export const emailId = "email";
 export const passwordId = "password";
 export const addImages = "Add Images";
+export const archiveDialogText =
+  "Archiving will hide this product from new purchases. Are you sure you want to archive this product?";
+export const CATEGORY_REQUIRED_MESSAGE = "Category is required";
+export const THUMBNAIL_REQUIRED_MESSAGE = "Thumbnail is required";
+export const NAME_REQUIRED_MESSAGE = "Name is required";
+export const PRICE_REQUIRED_MESSAGE = "Price is required";
+export const STOCK_REQUIRED_MESSAGE = "Stock is required";
+export const DESCRIPTION_REQUIRED_MESSAGE = "Description is required";
+export const editProduct = "Edit Product";
+export const addNewProduct = "Add New Product";
+export const list = "List";
+export const AUTH_ERRORS = ["No Token Provided", "Invalid access token"];
+export const SESSION_EXPIRE_ERRORS = ["refresh token expired", "jwt expired"];

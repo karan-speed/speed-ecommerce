@@ -17,6 +17,17 @@ function Sidebar({ customClass }: ISidebarProps) {
   const menuItems: MenuItem[] = [
     {
       type: "item",
+      text: "Admin",
+      icon: buttonIcons.admin,
+      path: "/admin",
+    },
+    {
+      type: "item",
+      text: "Memo",
+      path: "/temperory",
+    },
+    {
+      type: "item",
       text: "Dashboard",
       icon: <DashboardIcon />,
       path: "/dashboard",

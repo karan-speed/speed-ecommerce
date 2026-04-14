@@ -1,16 +1,21 @@
 import { Outlet, Navigate } from "react-router-dom";
 import Box from "../common/Box";
 import "../styles/public.scss";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import type { IProtectRoute } from "../../types";
 import Header from "../Header";
 import Sidebar from "./admin/Sidebar";
+import { hideLoader } from "../../redux/features/loader/loader.slice";
 
 function ProtectRoute({ allowRoles }: IProtectRoute) {
   const { access_token, user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   const isAuthorizeForAdmin = user?.role === "ADMIN";
   const isAuthorizeForUser = user?.role === "USER";
-
+  setTimeout(() => {
+    dispatch(hideLoader());
+  }, 500);
   if (!access_token || !user) {
     return <Navigate to="/login" replace />;
   }

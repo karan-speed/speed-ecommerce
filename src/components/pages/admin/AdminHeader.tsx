@@ -43,7 +43,7 @@ function AdminHeader() {
                 style={{ marginRight: "8px" }}
               />
               <Box>
-                <Text customClass="font-SemiBold font14">
+                <Text font="semiBold" customClass="font14">
                   {logoNameForAdmin}
                 </Text>
               </Box>
@@ -84,13 +84,17 @@ function AdminHeader() {
                       }}
                     >
                       {buttonIcons.profile}
-                      <Text marginLeft={"8px"}>{profileText}</Text>
+                      <Text font="regular" marginLeft={"8px"}>
+                        {profileText}
+                      </Text>
                     </Box>
                   </MenuItem>
                   <MenuItem onClick={handleLogOut}>
                     <Box display={"flex"} alignItems={"center"}>
                       {buttonIcons.logoutPower}
-                      <Text marginLeft={"8px"}>{logoutText}</Text>
+                      <Text font="regular" marginLeft={"8px"}>
+                        {logoutText}
+                      </Text>
                     </Box>
                   </MenuItem>
                 </List>

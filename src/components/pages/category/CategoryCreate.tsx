@@ -3,11 +3,12 @@ import { useFormik } from "formik";
 import Dialog from "../../common/Dialog";
 import { object, string } from "yup";
 import { CallAPIInterface } from "../../constants";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../redux/hooks";
 import {
   hideLoader,
   showLoader,
-} from "../../../app/features/loader/loader.slice";
+} from "../../../redux/features/loader/loader.slice";
+
 interface ICreateProps {
   isCreateClicked: boolean;
   handlerCreateClick: () => void;
@@ -15,20 +16,31 @@ interface ICreateProps {
 type CategoryFormValues = {
   name: string;
 };
-function CategoryCreate({ isCreateClicked, handlerCreateClick }: ICreateProps) {
+export default function CategoryCreate({
+  isCreateClicked,
+  handlerCreateClick,
+}: ICreateProps) {
+  const dispatch = useAppDispatch();
+
   const createHandler = async (values: CategoryFormValues): Promise<void> => {
     try {
+      dispatch(showLoader());
       const data = await CallAPIInterface({
         method: "POST",
         url: "/categories",
         data: values,
         isPrivate: true,
       });
-      window.location.reload();
+      await CallAPIInterface({
+        method: "GET",
+        url: "/categories",
+        isPrivate: true,
+      });
     } catch (error) {
       console.error(error);
     } finally {
       handlerCreateClick();
+      dispatch(hideLoader());
     }
   };
   const categorySchema = object({
@@ -69,5 +81,3 @@ function CategoryCreate({ isCreateClicked, handlerCreateClick }: ICreateProps) {
     </>
   );
 }
-
-export default CategoryCreate;

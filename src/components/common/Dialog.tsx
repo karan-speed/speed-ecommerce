@@ -13,15 +13,15 @@ import { buttonIcons } from "../images";
 import Text from "./Text";
 import classNames from "classnames";
 import Button from "./Button";
-import Box from "./Box";
 
 interface IDialogProps extends DialogProps {
   title: string;
   submitButtonLabel: string;
+  disabled?: boolean;
   open: boolean;
   customClass: string;
   children: React.ReactNode;
-  isForm: boolean;
+  isForm?: boolean;
   handleClose: () => void;
   handleSubmit?: (e?: React.FormEvent<HTMLFormElement>) => void;
 }
@@ -29,7 +29,8 @@ export default function Dialog({
   open,
   title,
   children,
-  isForm,
+  disabled,
+  isForm = false,
   customClass,
   submitButtonLabel,
   handleClose,
@@ -55,6 +56,7 @@ export default function Dialog({
             <DialogContent dividers>{children}</DialogContent>
             <DialogActions>
               <Button
+                disabled={disabled}
                 customClass="button-create-submit"
                 label={submitButtonLabel}
                 autoFocus
@@ -102,7 +104,8 @@ export default function Dialog({
               customClass="button-create-submit"
               label={submitButtonLabel}
               autoFocus
-              type="submit"
+              type="button"
+              onClick={() => handleSubmit?.()}
             ></Button>
           </DialogActions>
         </CustomDialog>

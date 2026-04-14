@@ -46,6 +46,7 @@
     position: relative;
     .MuiTableContainer-root {
       .MuiTableRow-root {
+        cursor: pointer;
         background: #fff;
         &:hover {
           background-color: #f0f7ff !important;

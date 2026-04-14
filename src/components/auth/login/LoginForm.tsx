@@ -11,6 +11,7 @@ import {
   login,
   password,
   PASSWORD_LENGTH_MESSAGE,
+  PASSWORD_REQUIRED_MESSAGE,
   passwordId,
   passwordPlaceHolder,
 } from "../../messages";
@@ -18,7 +19,9 @@ import { handleLogin } from "../../constants";
 function LoginForm() {
   const loginSchema = object({
     email: string().required(EMAIL_REQUIRED_MESSAGE).email(),
-    password: string().required().min(8, PASSWORD_LENGTH_MESSAGE),
+    password: string()
+      .required(PASSWORD_REQUIRED_MESSAGE)
+      .min(8, PASSWORD_LENGTH_MESSAGE),
   });
   const formik = useFormik({
     initialValues: {
@@ -28,13 +31,23 @@ function LoginForm() {
     validationSchema: loginSchema,
     onSubmit: handleLogin,
   });
-  const { handleSubmit, handleChange, handleBlur, values, dirty, isValid } =
-    formik;
+  const {
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    values,
+    dirty,
+    isValid,
+    errors,
+    touched,
+  } = formik;
   const disabled = !isValid || !dirty;
   return (
     <>
       <Grid onSubmit={handleSubmit} component={"form"} mt={4}>
         <Input
+          isError={touched.email && Boolean(errors.email)}
+          helperText={touched.email && errors.email}
           onChange={handleChange}
           onBlur={handleBlur}
           value={values.email}
@@ -45,6 +58,8 @@ function LoginForm() {
           label={emailAddress}
         />
         <Input
+          error={touched.password && Boolean(errors.password)}
+          helperText={touched.password && errors.password}
           onChange={handleChange}
           onBlur={handleBlur}
           value={values.password}

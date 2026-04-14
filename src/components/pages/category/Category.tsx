@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Box from "../../common/Box";
 import TableWithTabs from "../../common/TableWithTabs";
-import { useAppDispatch } from "../../../app/hooks";
-import {
-  hideLoader,
-  showLoader,
-} from "../../../app/features/loader/loader.slice";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { CallAPIInterface, categoryColumns, commonTabs } from "../../constants";
 import PageModule from "../../common/PageModule";
 import CategoryCreate from "./CategoryCreate";
+import type { ICategoryGetResponse } from "../../../types";
+import { setCategories } from "../../../redux/features/category/category.slice";
+import PageLoader from "../../common/PageLoader";
 
 function Category() {
   const [value, setValue] = useState("all");
   const [isCreateClicked, setisCreateClicked] = useState(false);
-  const [tabData, setTabData] = useState<Record<string, any[]>>({});
+  const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const categories = useAppSelector((state) => state.category.categories);
   const handleTabChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
@@ -24,37 +24,38 @@ function Category() {
 
   const handleGetCategory = async () => {
     try {
-      dispatch(showLoader());
-      const data = await CallAPIInterface({
+      setLoading(true);
+      const data = await CallAPIInterface<ICategoryGetResponse[]>({
         method: "GET",
         url: "/categories",
         isPrivate: true,
       });
-
-      const categories = Array.isArray(data) ? data : [];
-
-      setTabData({
-        all: categories,
-        available: categories.filter((c) => c.visiblity === true),
-        archive: categories.filter((c) => c.visiblity === false),
-      });
+      dispatch(setCategories(data));
     } catch (error) {
-      setTabData({
-        all: [],
-        available: [],
-        archive: [],
-      });
       console.error(error);
     } finally {
-      dispatch(hideLoader());
+      setLoading(false);
     }
   };
+
   const createCategoryButtonHandler = async () => {
     setisCreateClicked(true);
   };
+  const filteredData = useMemo(() => {
+    if (value === "available") {
+      return categories.filter((p) => p.visiblity);
+    }
+    if (value === "archive") {
+      return categories.filter((p) => !p.visiblity);
+    }
+    return categories;
+  }, [categories, value]);
   useEffect(() => {
     handleGetCategory();
   }, []);
+  if (loading || !categories) {
+    return <PageLoader loading={loading} text="Loading" />;
+  }
   return (
     <Box
       sx={{
@@ -68,18 +69,19 @@ function Category() {
       }}
     >
       <PageModule
-        title="Category"
+        title="Categories"
         buttonLable="Add Category"
         onCreate={createCategoryButtonHandler}
         description="Easily manage categories by adding, viewing, updating, or deleting them. Keep your data well-organized and up to date for a better user experience."
       >
         <TableWithTabs
+          isNavigate={true}
           elementForRedirection="categories"
           tabs={commonTabs}
           value={value}
           onTabChange={handleTabChange}
           columns={categoryColumns}
-          data={tabData[value] || []}
+          data={filteredData}
         />
         {isCreateClicked && (
           <CategoryCreate

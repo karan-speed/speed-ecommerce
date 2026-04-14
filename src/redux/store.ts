@@ -12,11 +12,11 @@ import {
 } from "redux-persist";
 import { persistStore } from "redux-persist";
 const lf = localforage.createInstance({
-  name: "redux-storage",
+  name: "redux-react-session",
   storeName: "keyvaluepairs",
 });
 const persistConfig = {
-  key: "APP-STORE",
+  key: "USER-SESSION",
   storage: lf,
   whitelist: ["auth", "cart", "address"],
 };

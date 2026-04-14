@@ -1,25 +1,31 @@
 import type { AxiosRequestConfig, Method } from "axios";
 import type {
-  ColumnProps,
+  CategoryColumnProps,
+  CategoryDetailsType,
   DiagonalProps,
-  Product,
+  Field,
+  IProductGetResponse,
+  ProductColumnProps,
   RegisterFormValues,
   UserRegisterResponseData,
 } from "../types";
 import classNames from "classnames";
 import "./styles/Diagonal.scss";
 import "./styles/Input.scss";
-import { store } from "../app/store";
+import { store } from "../redux/store";
 import Box from "./common/Box";
-import axios from "axios";
-import { setCredentials } from "../app/features/persisted/auth/auth.slice";
-import { showToast } from "../app/features/error/error.slice";
-import { logout, setJwtToken } from "../app/features/persisted/auth/auth.slice";
-import { hideLoader, showLoader } from "../app/features/loader/loader.slice";
-import { history } from "../utils";
+import axios, { isAxiosError } from "axios";
+import { setCredentials } from "../redux/features/persisted/auth/auth.slice";
+import { showToast } from "../redux/features/error/error.slice";
+import {
+  logout,
+  setAccessToken,
+} from "../redux/features/persisted/auth/auth.slice";
+import { hideLoader, showLoader } from "../redux/features/loader/loader.slice";
+import { formateTime } from "../utils";
 import type { UserLoginResponseData, LoginFormValues } from "../types";
 import Input from "./common/Input";
-import Slider from "./common/Slider";
+import Text from "./common/Text";
 
 type ExecuteApiRequestOptions = {
   method: Method;
@@ -33,7 +39,10 @@ type ExecuteApiRequestOptions = {
 const OpenApiEndpoints = ["/register", "/login", "/generate-token"];
 
 export const getHeaders = (
+  method: string,
+  data: unknown,
   url: string,
+  params: Record<string, unknown>,
   isPrivate: boolean = true,
   additionalHeaders: Record<string, string> = {},
 ) => {
@@ -44,26 +53,14 @@ export const getHeaders = (
     url.startsWith(endpoint),
   );
 
-  const headers: Record<string, string> = {
+  const jwtOptions: Record<string, string> = {
     "Content-Type": "application/json",
     ...additionalHeaders,
   };
 
   if (!isOpenApi && isPrivate && token) {
-    headers.Authorization = `Bearer ${token}`;
+    jwtOptions.Authorization = `${token}`;
   }
-
-  return headers;
-};
-export const CallAPIInterface = async <T = unknown,>({
-  method,
-  url,
-  data,
-  params,
-  isPrivate = true,
-  headers = {},
-}: ExecuteApiRequestOptions): Promise<T> => {
-  const jwtOptions = getHeaders(url, isPrivate, headers);
   const config: AxiosRequestConfig = {
     baseURL: import.meta.env.VITE_API_BASE_URL as string,
     method,
@@ -73,47 +70,106 @@ export const CallAPIInterface = async <T = unknown,>({
     headers: jwtOptions,
     withCredentials: true,
   };
-
-  try {
-    const response = await axios(config);
-    return response.data as T;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response?.data.message === "Session token expired") {
-        generateToken().then(async (resp) => {
-          jwtOptions.Authorization = `Bearer ${resp?.access_token}`;
-          config.headers = jwtOptions;
-          await axios(config).then(() => window.location.reload());
-        });
-      }
-      if (error.response?.data.message === "Session Expired") {
-        console.log("called from callApiInterface in refresh token not found");
-        store.dispatch(logout());
-        history.push("/login");
-      }
-      store.dispatch(
-        showToast({
-          message: error?.response?.data?.message || error?.message,
-          severity: "error",
-        }),
-      );
-    }
-    return Promise.reject(error);
-  }
+  return config;
 };
+const serverErrorStatusCodes = [500, 502, 503, 504];
+const errorStatusCodes = [400, 401, 403, 404, 409, 422, 429];
+export const CallAPIInterface = async <T = unknown,>({
+  method,
+  url,
+  data,
+  params,
+  isPrivate = true,
+  headers = {},
+}: ExecuteApiRequestOptions): Promise<T> => {
+  const jwtOptions = getHeaders(method, data, url, params!, isPrivate, headers);
+  return new Promise(async (resolve, reject) => {
+    if (Object.keys(jwtOptions)?.length) {
+      let axiosObj = {
+        ...jwtOptions,
+      };
+      let apiCall = axios(axiosObj);
+      apiCall
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          const errors = err;
+          console.log(errors);
+          const errorStatus = errors.status;
+          const errorType = errors.response?.data.type;
+          const errorMessage = errors.response.data.message;
+          if (isAxiosError(err)) {
+            console.log(errorType);
+            if (errorType === "token_expired") {
+              generateNewSession()
+                .then(async (res: any) => {
+                  if (jwtOptions.headers) {
+                    jwtOptions.headers.Authorization = res?.access_token;
+                  }
+                  await axios({
+                    ...jwtOptions,
+                  }).then((response) => resolve(response.data));
+                })
+                .catch((error) => {
+                  store.dispatch(
+                    showToast({
+                      message: error.response.data.message,
+                      severity: "error",
+                    }),
+                  );
+                  store.dispatch(showLoader());
+                  console.log(
+                    error.response.data.type,
+                    "from generate token failed",
+                  );
+                  store.dispatch(logout());
+                  store.dispatch(hideLoader());
+                });
+            }
+          }
 
-export const generateToken = async () => {
-  try {
-    const data = await CallAPIInterface<{ access_token: string }>({
+          if (
+            errorType !== "token_expired" &&
+            errorStatusCodes.includes(errorStatus)
+          ) {
+            store.dispatch(
+              showToast({
+                message: errorMessage,
+                severity: "error",
+              }),
+            );
+            return;
+          }
+
+          if (serverErrorStatusCodes.includes(errorStatus)) {
+            expireSession();
+          }
+        });
+    } else {
+      reject({});
+    }
+  });
+};
+export const expireSession = () => {
+  store.dispatch(logout());
+};
+export const generateNewSession = async () => {
+  return new Promise(async (resolve, reject) => {
+    return await axios<{ access_token: string }>({
+      baseURL: import.meta.env.VITE_API_BASE_URL as string,
       method: "POST",
-      url: "/generate-token",
-    });
-    store.dispatch(setJwtToken(data.access_token));
-    return data;
-  } catch (error) {
-    handleLogOut();
-    console.error(error);
-  }
+      url: "/generate-session",
+      withCredentials: true,
+    })
+      .then(async (response) => {
+        resolve(response.data);
+        store.dispatch(setAccessToken(response.data.access_token!));
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };
 export const handleLogin = async (values: LoginFormValues) => {
   try {
@@ -126,12 +182,13 @@ export const handleLogin = async (values: LoginFormValues) => {
     });
 
     store.dispatch(
-      setCredentials({ user: data.user, access_token: data.access_token }),
+      setCredentials({
+        user: data.user,
+        access_token: data.access_token,
+      }),
     );
   } catch (error) {
     console.error(error);
-  } finally {
-    store.dispatch(hideLoader());
   }
 };
 export const handleCategory = async () => {
@@ -171,16 +228,14 @@ export const handleRegister = async (values: RegisterFormValues) => {
 };
 
 export const handleLogOut = async () => {
-  store.dispatch(showLoader());
-
   try {
-    const data = await CallAPIInterface<{ message: string }>({
+    store.dispatch(showLoader());
+    await CallAPIInterface({
       method: "POST",
       url: "/logout",
-      isPrivate: false,
+      isPrivate: true,
     });
     store.dispatch(logout());
-    return data;
   } catch (error) {
     console.error(error);
   } finally {
@@ -226,7 +281,11 @@ export const categoryColumns = [
       />
     ),
   },
-  { key: "name", label: "Category Name" },
+  {
+    key: "name",
+    label: "Category Name",
+    render: (row: any) => <Text>{row.name}</Text>,
+  },
   {
     key: "visiblity",
     label: "Status",
@@ -235,22 +294,27 @@ export const categoryColumns = [
   {
     key: "createdAt",
     label: "Created on",
-    render: (row: any) => new Date(row.created_at).toLocaleDateString(),
+    render: (row: any) => formateTime(row.created_at),
   },
   {
     key: "updatedAt",
     label: "Updated on",
-    render: (row: any) => new Date(row.updated_at).toLocaleDateString(),
+    render: (row: any) => formateTime(row.updated_at),
   },
 ];
 
-export const renderField = (col: any, data: any) => {
+export const renderProductField = (col: any, data: any) => {
   if (col.render) return col.render(data);
 
-  return data[col.key as keyof Product] as any;
+  return data[col.key as keyof IProductGetResponse] as any;
+};
+export const renderDetailsField = (col: any, data: any) => {
+  if (col.render) return col.render(data);
+
+  return data[col.key as keyof CategoryDetailsType] as any;
 };
 
-export const productAllDetailColumns: ColumnProps[] = [
+export const productAllDetailColumns: ProductColumnProps[] = [
   {
     details: {
       title: "Details",
@@ -262,13 +326,19 @@ export const productAllDetailColumns: ColumnProps[] = [
         },
         {
           label: "Date Created",
-          key: "createdAt",
-          render: (row: any) => new Date(row.created_at).toLocaleDateString(),
+          key: "created_at",
+          render: (row: any) => formateTime(row.created_at),
         },
         {
           label: "Date Updated",
-          key: "updatedAt",
-          render: (row: any) => new Date(row.updated_at).toLocaleDateString(),
+          key: "updated_at",
+          render: (row: any) => formateTime(row.updated_at),
+        },
+        {
+          label: "Category Name",
+          key: "CategoryName",
+          render: (row: any) =>
+            row.category.name ? row.category.name : "Not found",
         },
       ],
     },
@@ -278,13 +348,18 @@ export const productAllDetailColumns: ColumnProps[] = [
         {
           label: "Thumbnail",
           key: "thumbnail",
-          render: (row: any) => (
-            <img
-              src={row.thumbnail}
-              alt="Thumbnail"
-              style={{ width: "150px", height: "150px" }}
-            />
-          ),
+          render: (row: any) =>
+            row.thumbnail ? (
+              <img
+                src={row.thumbnail}
+                alt={
+                  row.name ? `Thumbnail of ${row.name}` : "Product thumbnail"
+                }
+                style={{ width: "150px", height: "150px" }}
+              />
+            ) : (
+              <>No Thumbnail found</>
+            ),
         },
       ],
     },
@@ -314,7 +389,42 @@ export const productAllDetailColumns: ColumnProps[] = [
     },
   },
 ];
-export const productColumns = [
+export const categoryAllSatsColumns: CategoryColumnProps[] = [
+  {
+    summery: {
+      title: "Summery",
+      fields: [
+        {
+          key: "totalProducts",
+          label: "Total Products",
+          render: (row: any) => row.total_products && row.total_products,
+        },
+        {
+          key: "totalStock",
+          label: "Total Stock",
+          render: (row: any) => row.total_stock && row.total_stock,
+        },
+        {
+          key: "averagePrice",
+          label: "Average Price",
+          render: (row: any) => formatPrice(row.average_price),
+        },
+        {
+          key: "activeProducts",
+          label: "Active Products",
+          render: (row: any) => row.active_products && row.active_products,
+        },
+        {
+          key: "spotlightedProducts",
+          label: "Spotlighted Products",
+          render: (row: any) =>
+            row.spotlighted_products && row.spotlighted_products,
+        },
+      ],
+    },
+  },
+];
+export const productColumns: Field[] = [
   {
     key: "id",
     label: "Product ID",
@@ -327,8 +437,16 @@ export const productColumns = [
       />
     ),
   },
-  { key: "name", label: "Product Name" },
-  { key: "price", label: "Price " },
+  {
+    key: "name",
+    label: "Product Name",
+    render: (row: any) => <Text customClass="table-input">{row.name}</Text>,
+  },
+  {
+    key: "price",
+    label: "Price",
+    render: (row: any) => formatPrice(row.price),
+  },
   {
     key: "visiblity",
     label: "Status",
@@ -337,12 +455,12 @@ export const productColumns = [
   {
     key: "createdAt",
     label: "Created on",
-    render: (row: any) => new Date(row.created_at).toLocaleDateString(),
+    render: (row: any) => formateTime(row.created_at),
   },
   {
     key: "updatedAt",
     label: "Updated on",
-    render: (row: any) => new Date(row.updated_at).toLocaleDateString(),
+    render: (row: any) => formateTime(row.updated_at),
   },
 ];
 
@@ -389,62 +507,9 @@ export const ProductIcon = () => {
   );
 };
 
-{
-  /* <Table className={classes}>
-      <TableBody>
-        <TableRow>
-          <TableCell>
-            <Text customClass="font20  font-SemiBold mb-10">
-              {productAllDetailColumns[0].details.title}
-            </Text>
-          </TableCell>
-        </TableRow>
-        {productAllDetailColumns[0].details.fields.map((col) => (
-          <TableRow key={col.key}>
-            <TableCell className="table-head">{col.label}</TableCell>
-
-            <TableCell key={col.key}>
-              {col.render
-                ? col.render(data)
-                : Object.values(data[col.key as keyof Product])}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-      <TableBody>
-        <TableRow>
-          <TableCell>
-            {" "}
-            <Text customClass="font20  font-SemiBold mb-10">
-              {productAllDetailColumns[0].thumbnail.title}
-            </Text>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          {productAllDetailColumns[0].thumbnail.fields.map((col) => (
-            <TableCell key={col.key}>
-              {col.render
-                ? col.render(data)
-                : Object.values(data[col.key as keyof Product])}
-            </TableCell>
-          ))}
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <Text customClass="font20  font-SemiBold mb-10">
-              {productAllDetailColumns[0].images.title}
-            </Text>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          {productAllDetailColumns[0].images.fields.map((col) => (
-            <TableCell key={col.key}>
-              {col.render
-                ? col.render(data)
-                : Object.values(data[col.key as keyof Product])}
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableBody>
-    </Table> */
-}
+export const formatPrice = (amount: number, currency = "INR") => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency,
+  }).format(amount);
+};

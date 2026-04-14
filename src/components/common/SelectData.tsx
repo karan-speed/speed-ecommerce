@@ -1,20 +1,56 @@
 import classNames from "classnames";
-import { Select, type BaseSelectProps } from "@mui/material";
+import { Alert, MenuItem, Select, type BaseSelectProps } from "@mui/material";
 import "../styles/select.scss";
+import { Children } from "react";
+import { iconsForAlert } from "../images";
+
 interface selectPropsType extends BaseSelectProps {
   customClass: string;
+  placeholder?: string;
+  helperText?: string | boolean | undefined;
 }
 export default function SelectData({
   children,
   customClass,
-
   onChange,
+  value,
+  placeholder,
+  error,
+  helperText,
 }: selectPropsType) {
   const classes = classNames(`common-select-wrapper ${customClass}`);
 
   return (
-    <Select className={classes} onChange={onChange}>
-      {children}
-    </Select>
+    <>
+      <Select
+        error={error}
+        displayEmpty
+        renderValue={(value) => {
+          if (!value) {
+            return <span style={{ color: "#848b9e" }}>{placeholder}</span>;
+          }
+          const selectedItem = Children.toArray(children).find(
+            (child: any) => child.props.value === value,
+          ) as any;
+
+          return selectedItem?.props.children;
+        }}
+        value={value ?? ""}
+        className={classes}
+        onChange={onChange}
+      >
+        {children}
+      </Select>
+      {helperText && (
+        <Alert
+          sx={{ marginTop: "10px" }}
+          severity={"error"}
+          variant="standard"
+          icon={iconsForAlert["error"]}
+        >
+          {helperText}
+        </Alert>
+      )}
+    </>
   );
 }

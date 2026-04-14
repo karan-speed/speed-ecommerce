@@ -2,6 +2,17 @@
 .common-text {
   letter-spacing: normal !important;
   line-height: 1.5 !important;
+
+  &.spotlight {
+    color: $primaryBlue;
+    font-size: 14px;
+    font-family: $fontOutfitSemiBold;
+  }
+  &.unspotlight {
+    color: $sunFlowerYellow;
+    font-size: 14px;
+    font-family: $fontOutfitSemiBold;
+  }
   &.border-bottom {
     border-bottom: 1px solid #0000001f;
   }

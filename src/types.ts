@@ -1,9 +1,4 @@
-import type {
-  BoxProps,
-  ButtonProps,
-  InputBaseProps,
-  TypographyProps,
-} from "@mui/material";
+import type { BoxProps, ButtonProps, InputBaseProps } from "@mui/material";
 import { buttonIcons } from "./components/images";
 export interface AlertMessageProps {
   open: boolean;
@@ -35,10 +30,46 @@ export interface Section {
   fields: Field[];
 }
 
-export interface ColumnProps {
+export interface ProductColumnProps {
   details: Section;
   thumbnail: Section;
   images: Section;
+}
+export interface CategoryColumnProps {
+  summery: Section;
+}
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  thumbnail: string;
+  price: number;
+  stock: number;
+  spotlight: string;
+  created_at: string;
+  updated_at: string;
+};
+export type CategoryByProductType = {
+  id: string;
+  name: string;
+  total_products: number;
+  total_stock: number;
+  average_price: number;
+  active_products: number;
+  spotlighted_products: number;
+  products: Product[];
+};
+export type PartialCategoryByProduct = Partial<CategoryByProductType>;
+export type Category = {
+  id: string;
+  name: string;
+  visiblity: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export interface ProductImages {
+  url: string;
 }
 
 export interface InputProps extends InputBaseProps {
@@ -49,24 +80,9 @@ export interface InputProps extends InputBaseProps {
   type?: string;
   isError?: boolean;
   isPasswordVisible?: boolean;
+  error?: boolean;
+  helperText?: string | boolean | undefined;
   value?: string | number;
-}
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  images: ProductImage[];
-  thumbnail: string;
-  spotlight: boolean;
-  visiblity: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface TextProps extends TypographyProps {
-  customClass?: string;
 }
 
 export interface DiagonalProps extends BoxProps {
@@ -82,10 +98,10 @@ export interface UserRegisterResponseData {
   role: string;
 }
 export interface UserLoginResponseData {
-  message?: string;
   user: {
     id: string;
-    username: string;
+    first_name: string;
+    last_name: string;
     email: string;
     role: string;
     created_at: string;
@@ -154,10 +170,99 @@ export interface PageModuleProps {
   onUpdate?: (item: any) => void;
   renderDetails?: (item: any) => void;
 }
-export interface CategoryResponse {
+export interface ICategoryGetResponse {
   id: string;
   name: string;
   visiblity: boolean;
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IProductListGetResponse {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  category_id: string;
+  created_at: string;
+  updated_at: string;
+  thumbnail: string;
+  visiblity: boolean;
+  spotlight: boolean;
+}
+export interface ProductImage {
+  url: string;
+}
+export interface IProductGetResponse {
+  id: string;
+  name: string;
+  category: {
+    id?: string;
+    name: string;
+  };
+  description: string;
+  price: number;
+  stock: number;
+  category_id: string;
+  created_at: number;
+  updated_at: number;
+  thumbnail: string;
+  visiblity: boolean;
+  spotlight: boolean;
+  images: ProductImage[];
+}
+export type TPartialProductGetResponse = Partial<IProductGetResponse>;
+export interface IProductForm {
+  category_id: string;
+  name: string;
+  price: number;
+  stock: number;
+  description: string;
+  thumbnail: string;
+  images: ProductImage[];
+}
+
+export type productSchema = {
+  category_id: string;
+  name: string;
+  price: string;
+  stock: string;
+  description: string;
+  thumbnail: string;
+  images: ProductImage[];
+};
+
+export type Products = {
+  id: string;
+  name: string;
+  price: number;
+  visiblity: boolean;
+  created_at: number;
+  updated_at: number;
+};
+export const mapProductResponseToForm = (
+  values: IProductGetResponse,
+): productSchema => {
+  return {
+    category_id: values.category_id as string,
+
+    name: values.name,
+    description: values.description,
+    thumbnail: values.thumbnail,
+    price: String(values.price),
+    stock: String(values.stock),
+    images: values.images,
+  };
+};
+
+export type CategoryDetailsType = {
+  id: string;
+  name: string;
+  total_products: number;
+  total_stock: number;
+  average_price: number;
+  active_products: number;
+  spotlighted_products: number;
+  products: Product[];
+};

@@ -1,12 +1,10 @@
 import { Backdrop, Card, CardMedia, CardContent } from "@mui/material";
-
-import React from "react";
 import type { IloaderProps } from "../../types";
 import classNames from "classnames";
 import { speedPreloader } from "../images";
 import Text from "./Text";
 import "../styles/Loader.scss";
-import { useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../redux/hooks";
 
 function BackdropLoader({ text = "Loading...", customClass }: IloaderProps) {
   const state = useAppSelector((state) => state.loader);

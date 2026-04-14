@@ -1,21 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Box from "../../common/Box";
 import TableWithTabs from "../../common/TableWithTabs";
-import { useAppDispatch } from "../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   hideLoader,
   showLoader,
-} from "../../../app/features/loader/loader.slice";
+} from "../../../redux/features/loader/loader.slice";
 import { CallAPIInterface, commonTabs, productColumns } from "../../constants";
 import PageModule from "../../common/PageModule";
-import ProductCreate from "./ProductCreate";
-
+import ProductForm from "./ProductForm";
+import { setProducts } from "../../../redux/features/product/product.slice";
+import type { IProductGetResponse, Product, Products } from "../../../types";
+import PageLoader from "../../common/PageLoader";
 export default function Products() {
   const [value, setValue] = useState("all");
   const [isCreateClicked, setisCreateClicked] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [tabData, setTabData] = useState<Record<string, any[]>>({});
+  const products = useAppSelector((state) => state.product.list);
   const dispatch = useAppDispatch();
-  const handleTabChange = (event: any, newValue: any) => {
+  const handleTabChange = (_event: any, newValue: any) => {
     setValue(newValue);
   };
   const handleCreateClose = () => {
@@ -24,20 +28,13 @@ export default function Products() {
 
   const handleGetProduct = async () => {
     try {
-      dispatch(showLoader());
-      const data = await CallAPIInterface({
+      setLoading(true);
+      const data = await CallAPIInterface<Products[]>({
         method: "GET",
         url: "/products",
         isPrivate: true,
       });
-
-      const products = Array.isArray(data) ? data : [];
-
-      setTabData({
-        all: products,
-        available: products.filter((p) => p.visiblity === true),
-        archive: products.filter((p) => p.visiblity === false),
-      });
+      dispatch(setProducts(data));
     } catch (error) {
       setTabData({
         all: [],
@@ -46,7 +43,7 @@ export default function Products() {
       });
       console.error(error);
     } finally {
-      dispatch(hideLoader());
+      setLoading(false);
     }
   };
   const createProductButtonHandler = async () => {
@@ -55,6 +52,18 @@ export default function Products() {
   useEffect(() => {
     handleGetProduct();
   }, []);
+  const filteredData = useMemo(() => {
+    if (value === "available") {
+      return products.filter((p) => p.visiblity);
+    }
+    if (value === "archive") {
+      return products.filter((p) => !p.visiblity);
+    }
+    return products;
+  }, [products, value]);
+  if (loading || !products) {
+    return <PageLoader loading={loading} text="Loading" />;
+  }
   return (
     <Box
       sx={{
@@ -68,27 +77,26 @@ export default function Products() {
       }}
     >
       <PageModule
-        title="Product"
+        title="Products"
         buttonLable="Add Product"
         onCreate={createProductButtonHandler}
         description="Easily manage products by adding, viewing, updating, or deleting them. Keep your data well-organized and up to date for a better user experience."
       >
         <TableWithTabs
           isNavigate={true}
-          key={Math.random()}
+          key={Math.random().toLocaleString()}
           tabs={commonTabs}
           value={value}
           elementForRedirection="products"
           onTabChange={handleTabChange}
           columns={productColumns}
-          data={tabData[value] || []}
+          data={filteredData}
         />
-        {isCreateClicked && (
-          <ProductCreate
-            isCreateClicked={isCreateClicked}
-            handlerCreateClick={handleCreateClose}
-          />
-        )}
+        <ProductForm
+          isOpen={isCreateClicked}
+          isEdit={false}
+          onClose={handleCreateClose}
+        />
       </PageModule>
     </Box>
   );

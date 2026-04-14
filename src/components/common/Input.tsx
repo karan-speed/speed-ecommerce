@@ -1,11 +1,12 @@
 import { forwardRef, useState, type FC } from "react";
 import classNames from "classnames";
 import Box from "./Box";
-import { InputBase, InputAdornment, InputLabel } from "@mui/material";
+import { InputBase, InputAdornment, InputLabel, Alert } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import type { InputProps } from "../../types";
 import "../styles/input.scss";
+import { iconsForAlert } from "../images";
 const Input: FC<InputProps> = forwardRef(
   (
     {
@@ -15,6 +16,8 @@ const Input: FC<InputProps> = forwardRef(
       type = "text",
       isError,
       isPasswordVisible,
+      helperText,
+      error,
       value,
       customClass,
       elementClass,
@@ -61,6 +64,16 @@ const Input: FC<InputProps> = forwardRef(
                 )
           }
         />
+        {helperText && (
+          <Alert
+            sx={{ marginTop: "10px" }}
+            severity={"error"}
+            variant="standard"
+            icon={iconsForAlert["error"]}
+          >
+            {helperText}
+          </Alert>
+        )}
       </Box>
     );
   },

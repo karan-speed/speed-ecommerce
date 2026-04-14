@@ -5,6 +5,7 @@ import AddressReducer from "./features/persisted/adress/address.slice";
 import CategoryReducer from "./features/category/category.slice";
 import { ToastReducer } from "./features/error/error.slice";
 import { LoaderReducer } from "./features/loader/loader.slice";
+import { productReducer } from "./features/product/product.slice";
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
@@ -13,5 +14,6 @@ const rootReducer = combineReducers({
   category: CategoryReducer,
   toast: ToastReducer,
   loader: LoaderReducer,
+  product: productReducer,
 });
 export default rootReducer;

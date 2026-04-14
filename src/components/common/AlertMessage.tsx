@@ -1,8 +1,8 @@
 import { Alert, AlertTitle, Snackbar, Slide } from "@mui/material";
 import classNames from "classnames";
 import "../styles/alert.scss";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { hideToast } from "../../app/features/error/error.slice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { hideToast } from "../../redux/features/error/error.slice";
 import { iconsForAlert } from "../images";
 interface IAlertProps {
   customClass?: string;
@@ -26,7 +26,7 @@ function AlertMessage({ customClass }: IAlertProps) {
     <Snackbar
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       open={open}
-      autoHideDuration={2000}
+      autoHideDuration={1500}
       onClose={handleClose}
       slots={{ transition: Slide }}
       slotProps={{ transition: { direction: "left" } }}
