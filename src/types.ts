@@ -170,7 +170,7 @@ export interface PageModuleProps {
   onUpdate?: (item: any) => void;
   renderDetails?: (item: any) => void;
 }
-export interface ICategoryGetResponse {
+export interface TCategory {
   id: string;
   name: string;
   visiblity: boolean;

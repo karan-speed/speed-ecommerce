@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { CallAPIInterface, categoryColumns, commonTabs } from "../../constants";
 import PageModule from "../../common/PageModule";
 import CategoryCreate from "./CategoryCreate";
-import type { ICategoryGetResponse } from "../../../types";
+import type { TCategory } from "../../../types";
 import { setCategories } from "../../../redux/features/category/category.slice";
 import PageLoader from "../../common/PageLoader";
 
@@ -25,7 +25,7 @@ function Category() {
   const handleGetCategory = async () => {
     try {
       setLoading(true);
-      const data = await CallAPIInterface<ICategoryGetResponse[]>({
+      const data = await CallAPIInterface<TCategory[]>({
         method: "GET",
         url: "/categories",
         isPrivate: true,
