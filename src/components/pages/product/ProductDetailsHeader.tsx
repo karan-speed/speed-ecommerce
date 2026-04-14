@@ -20,6 +20,7 @@ import ProductForm from "./ProductForm";
 import type { TProduct } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
+  deleteProduct,
   setProduct,
   updateProduct,
 } from "../../../redux/features/product/product.slice";
@@ -69,7 +70,7 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
         handleSpotlightProduct();
       }
 
-      dispatch(setProduct(response));
+      dispatch(updateProduct(response));
       return response;
     } catch (error) {
       console.error(error);
@@ -87,7 +88,7 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
         },
         isPrivate: true,
       });
-      dispatch(setProduct(response));
+      dispatch(updateProduct(response));
       return response;
     } catch (error) {
       console.error(error);
@@ -95,12 +96,12 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
   };
   const deleteProductHandler = async () => {
     try {
-      const response = await CallAPIInterface({
+      const response = await CallAPIInterface<{ id: string }>({
         method: "DELETE",
         url: `/products/delete/${data?.id}`,
         isPrivate: true,
       });
-      return response;
+      dispatch(deleteProduct(response));
     } catch (error) {
       console.error(error);
     } finally {
