@@ -123,7 +123,9 @@ export const CallAPIInterface = async <T = unknown,>({
                     error.response.data.type,
                     "from generate token failed",
                   );
-                  store.dispatch(logout());
+                  (async () =>
+                    handleLogOut().catch(() => store.dispatch(logout())))();
+
                   store.dispatch(hideLoader());
                 });
             }

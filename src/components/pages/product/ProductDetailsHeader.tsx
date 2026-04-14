@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Box from "../../common/Box";
 import Text from "../../common/Text";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { buttonIcons } from "../../images";
 import {
   Breadcrumbs,
@@ -13,19 +13,23 @@ import {
 } from "@mui/material";
 import { CallAPIInterface } from "../../constants";
 import Dialog from "../../common/Dialog";
-import { archiveDialogText } from "../../messages";
+import { dialogText } from "../../messages";
 import Button from "../../common/Button";
 import CustomSwitch from "../../common/CustomSwitch";
 import ProductForm from "./ProductForm";
 import type { IProductGetResponse } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { updateProduct } from "../../../redux/features/product/product.slice";
+import {
+  setProduct,
+  updateProduct,
+} from "../../../redux/features/product/product.slice";
 
 interface DataProps {
   previousNavlink: string;
   loading: boolean;
 }
 function DetailsHeader({ previousNavlink, loading }: DataProps) {
+  const navigate = useNavigate();
   const data = useAppSelector((state) => state.product.selectedProduct);
   const dispatch = useAppDispatch();
   const [MoreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
@@ -33,6 +37,7 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
     useState<IProductGetResponse | null>(null);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [openArchiveDialog, setArchiveDialog] = useState(false);
+  const [openDeleteDailog, setDeleteDialog] = useState(false);
   const copyId = async (text: string) => {
     const id = await navigator.clipboard.writeText(text);
     return id;
@@ -42,6 +47,9 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
   };
   const handleArchiveDailogClose = () => {
     setArchiveDialog(false);
+  };
+  const handleDeleteDailogClose = () => {
+    setDeleteDialog(false);
   };
   const handleEditDailog = () => {
     setSelectedProduct(data);
@@ -62,7 +70,7 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
         handleSpotlightProduct();
       }
 
-      dispatch(updateProduct(response));
+      dispatch(setProduct(response));
       return response;
     } catch (error) {
       console.error(error);
@@ -80,10 +88,25 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
         },
         isPrivate: true,
       });
-      dispatch(updateProduct(response));
+      dispatch(setProduct(response));
       return response;
     } catch (error) {
       console.error(error);
+    }
+  };
+  const deleteProductHandler = async () => {
+    try {
+      const response = await CallAPIInterface({
+        method: "DELETE",
+        url: `/products/delete/${data?.id}`,
+        isPrivate: true,
+      });
+      return response;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      handleDeleteDailogClose();
+      navigate("/products");
     }
   };
   const CachedProductStatus = useMemo(() => {
@@ -266,6 +289,20 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
                   {buttonIcons.edit} Edit
                 </Text>
               </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setDeleteDialog(true);
+                  setMoreAnchorEl(null);
+                }}
+              >
+                <Text
+                  gap={1}
+                  customClass="grey-text flex-text"
+                  sx={{ padding: "2px 35px 2px 16px" }}
+                >
+                  {buttonIcons.delete} Delete
+                </Text>
+              </MenuItem>
             </Box>
           </>
         </List>
@@ -281,11 +318,27 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
       >
         <Box>
           <Text customClass="default-text" fontSize={18}>
-            {archiveDialogText}
+            {dialogText.archive}
+          </Text>
+        </Box>
+      </Dialog>
+      <Dialog
+        isForm={false}
+        customClass="product-delete-dialog"
+        title="Delete Product"
+        open={openDeleteDailog}
+        handleSubmit={deleteProductHandler}
+        handleClose={handleDeleteDailogClose}
+        submitButtonLabel="Delete Product"
+      >
+        <Box>
+          <Text customClass="default-text" fontSize={18}>
+            {dialogText.delete}
           </Text>
         </Box>
       </Dialog>
       <ProductForm
+        onSuccess={() => ""}
         isOpen={isOpenEdit}
         initialData={selectedProduct}
         onClose={() => {

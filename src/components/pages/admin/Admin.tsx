@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useCallback, useReducer, useState } from "react";
 import Box from "../../common/Box";
 import Button from "../../common/Button";
 import Child from "./Child";
@@ -10,6 +10,7 @@ function Admin() {
   };
   type ActionType = { type: "increment" } | { type: "decrement" };
   const initialState: State = { count: 0 };
+  const [loginCount, setLoginCount] = useState(0);
   const reducer = (state: State, action: ActionType) => {
     switch (action.type) {
       case "increment":
@@ -22,12 +23,15 @@ function Admin() {
   };
   const [state, dispatch] = useReducer(reducer, initialState);
   console.log("render parent");
-
+  const logIn = useCallback(() => {}, [loginCount]);
   return (
     <Box customClass="section-header-wrapper">
       <Box display={"flex"}>
-        <Child />
+        <Child login={logIn} />
         <Text>Counter Count = {state.count}</Text>
+        <Text onClick={() => setLoginCount((prev) => prev + 1)}>
+          Login Count = {loginCount}
+        </Text>
       </Box>
       <Box width={300} mt={"20px"} display={"flex"} gap={2}>
         {" "}

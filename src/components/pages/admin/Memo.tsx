@@ -19,7 +19,7 @@ function Memo() {
     }
   };
   const [state, dispatch] = useReducer(reducer, initialState);
-  //   const incrementAction = dispatch({ type: "increment" });
+
   const heavyCalculation = useMemo(() => {
     console.log("heavy Calculation Rendered");
     let result = 0;

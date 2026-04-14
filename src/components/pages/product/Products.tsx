@@ -1,16 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Box from "../../common/Box";
 import TableWithTabs from "../../common/TableWithTabs";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import {
-  hideLoader,
-  showLoader,
-} from "../../../redux/features/loader/loader.slice";
 import { CallAPIInterface, commonTabs, productColumns } from "../../constants";
 import PageModule from "../../common/PageModule";
 import ProductForm from "./ProductForm";
 import { setProducts } from "../../../redux/features/product/product.slice";
-import type { IProductGetResponse, Product, Products } from "../../../types";
+import type { Products } from "../../../types";
 import PageLoader from "../../common/PageLoader";
 export default function Products() {
   const [value, setValue] = useState("all");
@@ -26,7 +22,7 @@ export default function Products() {
     setisCreateClicked(false);
   };
 
-  const handleGetProduct = async () => {
+  const handleGetProduct = useCallback(async () => {
     try {
       setLoading(true);
       const data = await CallAPIInterface<Products[]>({
@@ -45,7 +41,8 @@ export default function Products() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dispatch]);
+
   const createProductButtonHandler = async () => {
     setisCreateClicked(true);
   };
@@ -95,6 +92,7 @@ export default function Products() {
         <ProductForm
           isOpen={isCreateClicked}
           isEdit={false}
+          onSuccess={handleGetProduct}
           onClose={handleCreateClose}
         />
       </PageModule>
