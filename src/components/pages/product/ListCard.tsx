@@ -1,12 +1,12 @@
 import { CardContent, Stack, CardMedia, CardActionArea } from "@mui/material";
-import type { Product } from "../../../types";
+import type { TCategoryDetailProduct } from "../../../types";
 import CustomCard from "../../common/CustomCard";
 import Text from "../../common/Text";
 import { useNavigate } from "react-router-dom";
 import CustomChip from "../../common/CustomChip";
 
 interface ProductCardProps {
-  product: Product;
+  product: TCategoryDetailProduct;
 }
 
 export default function ListCard({ product }: ProductCardProps) {

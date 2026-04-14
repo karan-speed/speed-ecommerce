@@ -1,13 +1,15 @@
 import type { AxiosRequestConfig, Method } from "axios";
 import type {
   CategoryColumnProps,
-  CategoryDetailsType,
   DiagonalProps,
   Field,
-  IProductGetResponse,
+  TProduct,
   ProductColumnProps,
-  RegisterFormValues,
-  UserRegisterResponseData,
+  TRegisterForm,
+  TLoginForm,
+  TCategoryDetails,
+  TUserRegister,
+  TUserLogin,
 } from "../types";
 import classNames from "classnames";
 import "./styles/Diagonal.scss";
@@ -23,7 +25,6 @@ import {
 } from "../redux/features/persisted/auth/auth.slice";
 import { hideLoader, showLoader } from "../redux/features/loader/loader.slice";
 import { formateTime } from "../utils";
-import type { UserLoginResponseData, LoginFormValues } from "../types";
 import Input from "./common/Input";
 import Text from "./common/Text";
 
@@ -173,10 +174,10 @@ export const generateNewSession = async () => {
       });
   });
 };
-export const handleLogin = async (values: LoginFormValues) => {
+export const handleLogin = async (values: TLoginForm) => {
   try {
     store.dispatch(showLoader());
-    const data = await CallAPIInterface<UserLoginResponseData>({
+    const data = await CallAPIInterface<TUserLogin>({
       method: "POST",
       data: values,
       url: "/login",
@@ -212,10 +213,10 @@ export const handleCategory = async () => {
     store.dispatch(hideLoader());
   }
 };
-export const handleRegister = async (values: RegisterFormValues) => {
+export const handleRegister = async (values: TRegisterForm) => {
   try {
     store.dispatch(showLoader());
-    const data = await CallAPIInterface<UserRegisterResponseData>({
+    const data = await CallAPIInterface<TUserRegister>({
       method: "POST",
       data: values,
       url: "/register",
@@ -308,12 +309,12 @@ export const categoryColumns = [
 export const renderProductField = (col: any, data: any) => {
   if (col.render) return col.render(data);
 
-  return data[col.key as keyof IProductGetResponse] as any;
+  return data[col.key as keyof TProduct] as any;
 };
 export const renderDetailsField = (col: any, data: any) => {
   if (col.render) return col.render(data);
 
-  return data[col.key as keyof CategoryDetailsType] as any;
+  return data[col.key as keyof TCategoryDetails] as any;
 };
 
 export const productAllDetailColumns: ProductColumnProps[] = [

@@ -20,16 +20,14 @@ import { buttonIcons } from "../../images";
 import SelectData from "../../common/SelectData";
 import {
   mapProductResponseToForm,
-  type Category,
   type IProductForm,
-  type IProductGetResponse,
+  type TCategoryList,
+  type TProduct,
   type productSchema,
 } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   addProduct,
-  setProduct,
-  setProducts,
   updateProduct,
 } from "../../../redux/features/product/product.slice";
 import {
@@ -42,7 +40,7 @@ interface IProductFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: IProductGetResponse | null;
+  initialData?: TProduct | null;
   isEdit?: boolean;
 }
 
@@ -60,7 +58,7 @@ export default function ProductForm({
   const handleGetCategory = async () => {
     try {
       dispatch(showLoader());
-      const data = await CallAPIInterface<Category[]>({
+      const data = await CallAPIInterface<TCategoryList[]>({
         method: "GET",
         url: "/categories",
         isPrivate: true,
@@ -86,7 +84,7 @@ export default function ProductForm({
         thumbnail: values.thumbnail,
         images: values.images,
       };
-      const data = await CallAPIInterface<IProductGetResponse>({
+      const data = await CallAPIInterface<TProduct>({
         method: "POST",
         url: "/products",
         data: product,
@@ -113,7 +111,7 @@ export default function ProductForm({
         thumbnail: values.thumbnail,
         images: values.images,
       };
-      const data = await CallAPIInterface<IProductGetResponse>({
+      const data = await CallAPIInterface<TProduct>({
         method: "PATCH",
         url: `/products/${initialData?.id}`,
         data: product,

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { CallAPIInterface, categoryAllSatsColumns } from "../../constants";
 import { useParams } from "react-router-dom";
-import type { CategoryByProductType } from "../../../types";
+import type { TCategoryDetails } from "../../../types";
 import Box from "../../common/Box";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setCategoryDetails } from "../../../redux/features/category/category.slice";
@@ -18,7 +18,7 @@ function CategoryDetails() {
   const details = useAppSelector((state) => state.category.categoryDetails);
   const categoryListHandler = async () => {
     try {
-      const data = await CallAPIInterface<CategoryByProductType>({
+      const data = await CallAPIInterface<TCategoryDetails>({
         method: "GET",
         url: `/categories/${id}/details`,
       });

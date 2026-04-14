@@ -38,7 +38,7 @@ export interface ProductColumnProps {
 export interface CategoryColumnProps {
   summery: Section;
 }
-export type Product = {
+export type TCategoryDetailProduct = {
   id: string;
   name: string;
   description: string;
@@ -49,7 +49,7 @@ export type Product = {
   created_at: string;
   updated_at: string;
 };
-export type CategoryByProductType = {
+export type TCategoryDetails = {
   id: string;
   name: string;
   total_products: number;
@@ -57,10 +57,10 @@ export type CategoryByProductType = {
   average_price: number;
   active_products: number;
   spotlighted_products: number;
-  products: Product[];
+  products: TCategoryDetailProduct[];
 };
-export type PartialCategoryByProduct = Partial<CategoryByProductType>;
-export type Category = {
+
+export type TCategoryList = {
   id: string;
   name: string;
   visiblity: boolean;
@@ -90,14 +90,14 @@ export interface DiagonalProps extends BoxProps {
   customClass?: string;
 }
 
-export interface UserRegisterResponseData {
+export interface TUserRegister {
   id: string;
   first_name: string;
   last_name: string;
   email: string;
   role: string;
 }
-export interface UserLoginResponseData {
+export interface TUserLogin {
   user: {
     id: string;
     first_name: string;
@@ -108,32 +108,12 @@ export interface UserLoginResponseData {
   };
   access_token: string;
 }
-export interface UserRegisterResponseData {
-  message?: string;
-  user: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    role: string;
-  };
-}
-export interface UserAdressResponse {
-  id: string;
-  full_name?: string;
-  phone?: string;
-  address_line?: string;
-  city?: string;
-  state?: string;
-  pincode?: string;
-  country?: string;
-}
 
-export type LoginFormValues = {
+export type TLoginForm = {
   email: string;
   password: string;
 };
-export type RegisterFormValues = {
+export type TRegisterForm = {
   first_name: string;
   last_name: string;
   phone_number: string;
@@ -170,31 +150,11 @@ export interface PageModuleProps {
   onUpdate?: (item: any) => void;
   renderDetails?: (item: any) => void;
 }
-export interface TCategory {
-  id: string;
-  name: string;
-  visiblity: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
 
-export interface IProductListGetResponse {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  category_id: string;
-  created_at: string;
-  updated_at: string;
-  thumbnail: string;
-  visiblity: boolean;
-  spotlight: boolean;
-}
 export interface ProductImage {
   url: string;
 }
-export interface IProductGetResponse {
+export interface TProduct {
   id: string;
   name: string;
   category: {
@@ -212,7 +172,7 @@ export interface IProductGetResponse {
   spotlight: boolean;
   images: ProductImage[];
 }
-export type TPartialProductGetResponse = Partial<IProductGetResponse>;
+export type TPartialProduct = Partial<TProduct>;
 export interface IProductForm {
   category_id: string;
   name: string;
@@ -233,7 +193,7 @@ export type productSchema = {
   images: ProductImage[];
 };
 
-export type Products = {
+export type TProductsList = {
   id: string;
   name: string;
   price: number;
@@ -241,9 +201,7 @@ export type Products = {
   created_at: number;
   updated_at: number;
 };
-export const mapProductResponseToForm = (
-  values: IProductGetResponse,
-): productSchema => {
+export const mapProductResponseToForm = (values: TProduct): productSchema => {
   return {
     category_id: values.category_id as string,
 
@@ -254,15 +212,4 @@ export const mapProductResponseToForm = (
     stock: String(values.stock),
     images: values.images,
   };
-};
-
-export type CategoryDetailsType = {
-  id: string;
-  name: string;
-  total_products: number;
-  total_stock: number;
-  average_price: number;
-  active_products: number;
-  spotlighted_products: number;
-  products: Product[];
 };

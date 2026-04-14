@@ -17,7 +17,7 @@ import { dialogText } from "../../messages";
 import Button from "../../common/Button";
 import CustomSwitch from "../../common/CustomSwitch";
 import ProductForm from "./ProductForm";
-import type { IProductGetResponse } from "../../../types";
+import type { TProduct } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   setProduct,
@@ -33,8 +33,7 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
   const data = useAppSelector((state) => state.product.selectedProduct);
   const dispatch = useAppDispatch();
   const [MoreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedProduct, setSelectedProduct] =
-    useState<IProductGetResponse | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<TProduct | null>(null);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [openArchiveDialog, setArchiveDialog] = useState(false);
   const [openDeleteDailog, setDeleteDialog] = useState(false);
@@ -58,7 +57,7 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
 
   const handleArchiveProduct = async () => {
     try {
-      const response = await CallAPIInterface<IProductGetResponse>({
+      const response = await CallAPIInterface<TProduct>({
         method: "PUT",
         url: `/products/visiblity/${data?.id}`,
         data: {
@@ -80,7 +79,7 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
   };
   const handleSpotlightProduct = async () => {
     try {
-      const response = await CallAPIInterface<IProductGetResponse>({
+      const response = await CallAPIInterface<TProduct>({
         method: "PUT",
         url: `/products/spotlight/${data?.id}`,
         data: {

@@ -6,7 +6,7 @@ import { CallAPIInterface, commonTabs, productColumns } from "../../constants";
 import PageModule from "../../common/PageModule";
 import ProductForm from "./ProductForm";
 import { setProducts } from "../../../redux/features/product/product.slice";
-import type { Products } from "../../../types";
+import type { TProductsList } from "../../../types";
 import PageLoader from "../../common/PageLoader";
 export default function Products() {
   const [value, setValue] = useState("all");
@@ -25,7 +25,7 @@ export default function Products() {
   const handleGetProduct = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await CallAPIInterface<Products[]>({
+      const data = await CallAPIInterface<TProductsList[]>({
         method: "GET",
         url: "/products",
         isPrivate: true,

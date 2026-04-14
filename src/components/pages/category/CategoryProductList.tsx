@@ -1,9 +1,9 @@
-import type { Product } from "../../../types";
+import type { TCategoryDetailProduct } from "../../../types";
 import ListCard from "../product/ListCard";
 import CustomGrid from "../../common/CustomGrid";
 
 interface CategoryProductList {
-  data: Product[];
+  data: TCategoryDetailProduct[];
 }
 
 function CategoryProductList({ data }: CategoryProductList) {
