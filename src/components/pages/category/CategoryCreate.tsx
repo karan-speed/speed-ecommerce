@@ -46,14 +46,22 @@ export default function CategoryCreate({
   const categorySchema = object({
     name: string().required("Category is required"),
   });
-  const { values, handleBlur, handleChange, handleSubmit, dirty, isValid } =
-    useFormik({
-      initialValues: {
-        name: "",
-      },
-      validationSchema: categorySchema,
-      onSubmit: createHandler,
-    });
+  const {
+    values,
+    handleBlur,
+    errors,
+    touched,
+    handleChange,
+    handleSubmit,
+    dirty,
+    isValid,
+  } = useFormik({
+    initialValues: {
+      name: "",
+    },
+    validationSchema: categorySchema,
+    onSubmit: createHandler,
+  });
   return (
     <>
       {isCreateClicked && (
@@ -69,6 +77,8 @@ export default function CategoryCreate({
           <Input
             name="name"
             id="name"
+            error={touched.name && Boolean(errors.name)}
+            helperText={touched.name && errors.name}
             value={values.name}
             onChange={handleChange}
             onBlur={handleBlur}

@@ -27,6 +27,7 @@ import { hideLoader, showLoader } from "../redux/features/loader/loader.slice";
 import { formateTime } from "../utils";
 import Input from "./common/Input";
 import Text from "./common/Text";
+import Copy from "./common/Copy";
 
 type ExecuteApiRequestOptions = {
   method: Method;
@@ -275,12 +276,19 @@ export const categoryColumns = [
     key: "id",
     label: "Category ID",
     render: (row: { id: string }) => (
-      <Input
-        elementClass="category-input-element"
-        customClass="table-input"
-        value={row.id}
-        readOnly
-      />
+      <Box
+        onClick={(e) => e.stopPropagation()}
+        display={"flex"}
+        alignItems={"center"}
+      >
+        <Input
+          elementClass="category-input-element"
+          customClass="table-input"
+          value={row.id}
+          readOnly
+        />
+        <Copy value={row.id} />
+      </Box>
     ),
   },
   {
@@ -432,17 +440,25 @@ export const categoryAllSatsColumns: CategoryColumnProps[] = [
     },
   },
 ];
+
 export const productColumns: Field[] = [
   {
     key: "id",
     label: "Product ID",
     render: (row: { id: string }) => (
-      <Input
-        elementClass="product-input-element"
-        customClass="table-input"
-        value={row.id}
-        readOnly
-      />
+      <Box
+        onClick={(e) => e.stopPropagation()}
+        display={"flex"}
+        alignItems={"center"}
+      >
+        <Input
+          elementClass="product-input-element"
+          customClass="table-input"
+          value={row.id}
+          readOnly
+        />
+        <Copy value={row.id} />
+      </Box>
     ),
   },
   {

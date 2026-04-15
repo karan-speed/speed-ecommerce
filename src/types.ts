@@ -139,11 +139,7 @@ export type MenuItem = {
   path?: string;
   children?: MenuItem[];
 };
-export interface ItemProps {
-  item: MenuItem;
-  expanded?: string | false;
-  setExpanded?: (val: string | false) => void;
-}
+
 export interface IProtectRoute {
   allowRoles: "USER" | "ADMIN";
 }

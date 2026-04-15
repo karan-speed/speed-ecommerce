@@ -65,9 +65,7 @@ function ProductDetails() {
   return (
     <>
       <Box customClass="product-detail-wrapper">
-        {product && (
-          <DetailsHeader loading={loading} previousNavlink="products" />
-        )}
+        <DetailsHeader loading={loading} previousNavlink="products" />
         <Box customClass="product-detail-content">
           <DataTable customClass="product-details-table">
             <DetailsSection

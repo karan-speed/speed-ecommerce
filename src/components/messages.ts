@@ -2,6 +2,7 @@ export const logoName = "Speed E-commerce";
 export const logoNameForAdmin = "Speed E-commerce Admin";
 export const signInYourAccount = "Sign in to your account";
 export const signUpYourAccount = "Sign up to your account";
+export const copiedText = "Copied";
 export const itGreatToHaveYouHere =
   "It’s great to have you here again. Kindly provide your registered email address.";
 export const itGreatToHaveYouHereSignup =

@@ -18,8 +18,8 @@ import Text from "./Text";
 interface IAccordionProps {
   item: MenuItem;
   customClass?: string;
-  expanded: string | false;
-  setExpanded: (val: string | false) => void;
+  expanded: string | boolean | undefined;
+  setExpanded: (val: string | boolean) => void;
 }
 function Accordian({
   item,

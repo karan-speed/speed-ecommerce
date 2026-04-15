@@ -48,11 +48,7 @@ function CategoryDetails() {
         <DataTable customClass="category-details-table">
           <CategorySummery config={config.summery} data={satsDetails} />
         </DataTable>
-        {details.products.length > 0 && (
-          <Text paddingBlock={2} customClass="font-SemiBold font20">
-            {list}
-          </Text>
-        )}
+
         <CategoryProductList data={details.products} />
       </Box>
     </Box>
