@@ -1,4 +1,5 @@
 import ArchiveIcon from "@mui/icons-material/Archive";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import EmailIcon from "@mui/icons-material/Email";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -11,7 +12,6 @@ import ErrorIcon from "@mui/icons-material/Error";
 import WarningIcon from "@mui/icons-material/Warning";
 import InfoIcon from "@mui/icons-material/Info";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AddIcon from "@mui/icons-material/Add";
@@ -231,12 +231,12 @@ export const buttonIcons = {
   unarchive: <UnarchiveIcon />,
   edit: <EditIcon sx={{ color: "#2a67ff", marginLeft: "8px" }} />,
   delete: <DeleteIcon sx={{ color: "#2a67ff", marginLeft: "8px" }} />,
+  checked: <CheckCircleIcon sx={{ fontSize: "12px", marginRight: "4px" }} />,
   horizontalThreeDots: (
     <MoreHorizIcon
       tabIndex={0}
       sx={{
-        width: "30px",
-        height: "30px",
+        color: "#848b9e",
         margin: "0 0 0 8px",
         "&:focus": {
           borderRadius: "4px",
@@ -248,11 +248,17 @@ export const buttonIcons = {
     />
   ),
   copyIcon: (
-    <ContentCopyIcon
+    <FileCopyIcon
+      tabIndex={0}
       sx={{
         ml: "8px",
         fontSize: "16px",
         cursor: "pointer",
+        color: "#848b9e",
+        "&:focus": {
+          borderRadius: "4px",
+          outline: "3px solid #bfd1ff",
+        },
       }}
     />
   ),

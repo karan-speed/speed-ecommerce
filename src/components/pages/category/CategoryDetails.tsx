@@ -6,7 +6,6 @@ import Box from "../../common/Box";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setCategoryDetails } from "../../../redux/features/category/category.slice";
 import Text from "../../common/Text";
-import { TableCell, TableRow } from "@mui/material";
 import DataTable from "../../common/DataTable";
 import CategorySummery from "./CategorySummery";
 import CategoryProductList from "./CategoryProductList";
@@ -49,11 +48,7 @@ function CategoryDetails() {
         <DataTable customClass="category-details-table">
           <CategorySummery config={config.summery} data={satsDetails} />
         </DataTable>
-        {details.products.length > 0 && (
-          <Text paddingBlock={2} customClass="font-SemiBold font20">
-            {list}
-          </Text>
-        )}
+
         <CategoryProductList data={details.products} />
       </Box>
     </Box>

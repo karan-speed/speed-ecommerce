@@ -2,6 +2,7 @@ export const logoName = "Speed E-commerce";
 export const logoNameForAdmin = "Speed E-commerce Admin";
 export const signInYourAccount = "Sign in to your account";
 export const signUpYourAccount = "Sign up to your account";
+export const copiedText = "Copied";
 export const itGreatToHaveYouHere =
   "It’s great to have you here again. Kindly provide your registered email address.";
 export const itGreatToHaveYouHereSignup =
@@ -26,7 +27,7 @@ export const register = "Register";
 export const profileText = "Profile";
 export const logoutText = "Logout";
 export const EMAIL_REQUIRED_MESSAGE = "Email Address is required";
-
+export const noDataFound = "No Data found";
 export const PASSWORD_REQUIRED_MESSAGE = "Password is required";
 export const PASSWORD_LENGTH_MESSAGE =
   "password should be minimum 8 characters";

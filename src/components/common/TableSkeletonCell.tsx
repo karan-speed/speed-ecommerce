@@ -1,5 +1,5 @@
 import { TableCell } from "@mui/material";
-import Skeleton from "@mui/material/Skeleton";
+import CustomSkeleton from "./CustomSkeleton";
 
 interface TableSkeletonCellProps {
   type?: "text" | "image";
@@ -15,7 +15,7 @@ export const TableSkeletonCell = ({
   if (type === "image") {
     return (
       <TableCell>
-        <Skeleton
+        <CustomSkeleton
           variant="rectangular"
           width={width || 150}
           height={height || 150}
@@ -27,10 +27,10 @@ export const TableSkeletonCell = ({
 
   return (
     <TableCell>
-      <Skeleton
+      <CustomSkeleton
         variant="text"
         width={width || "70%"}
-        height={height || 24}
+        height={height}
         animation="wave"
       />
     </TableCell>

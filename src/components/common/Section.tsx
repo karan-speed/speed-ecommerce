@@ -1,25 +1,23 @@
 import { Skeleton, TableCell, TableRow } from "@mui/material";
 import Text from "./Text";
 import { renderProductField } from "../constants";
-import type {
-  ProductColumnProps,
-  TPartialProductGetResponse,
-} from "../../types";
+import type { ProductColumnProps, TPartialProduct } from "../../types";
 import { TableSkeletonCell } from "./TableSkeletonCell";
+import CustomSkeleton from "./CustomSkeleton";
 
 interface DetailsSectionProps {
   config: ProductColumnProps["details"];
-  data: TPartialProductGetResponse;
+  data: TPartialProduct;
   loading: boolean;
 }
 interface MediaSectionProps {
   config: ProductColumnProps["images"];
-  data: TPartialProductGetResponse;
+  data: TPartialProduct;
   loading: boolean;
 }
 interface ThumbnailSectionProps {
   config: ProductColumnProps["thumbnail"];
-  data: TPartialProductGetResponse;
+  data: TPartialProduct;
   loading: boolean;
 }
 
@@ -32,7 +30,7 @@ export const DetailsSection = ({
     <TableRow>
       <TableCell className="title">
         {loading ? (
-          <Skeleton variant="text" width="40%" height={32} animation="wave" />
+          <CustomSkeleton customClass="table-title-wrapper" animation="wave" />
         ) : (
           <Text font="semiBold" customClass="font20">
             {config.title}
@@ -45,14 +43,18 @@ export const DetailsSection = ({
       <TableRow key={col.key}>
         <TableCell className="table-head">
           {loading ? (
-            <Skeleton variant="text" width="40%" height={32} animation="wave" />
+            <CustomSkeleton
+              customClass="table-head-wrapper"
+              variant="text"
+              animation="wave"
+            />
           ) : (
             <Text>{col.label}</Text>
           )}
         </TableCell>
         <TableCell>
           {loading ? (
-            <Skeleton
+            <CustomSkeleton
               variant="text"
               width="100%"
               height={20}
@@ -72,7 +74,11 @@ export const MediaSection = ({ config, data, loading }: MediaSectionProps) => (
     <TableRow>
       <TableCell className="title">
         {loading ? (
-          <Skeleton variant="text" width="40%" height={32} animation="wave" />
+          <CustomSkeleton
+            customClass="table-title-wrapper"
+            variant="text"
+            animation="wave"
+          />
         ) : (
           <Text font="semiBold" customClass="font20">
             {config.title}
@@ -101,7 +107,11 @@ export const ThumbnailSection = ({
     <TableRow>
       <TableCell className="title">
         {loading ? (
-          <Skeleton variant="text" width="40%" height={32} animation="wave" />
+          <CustomSkeleton
+            customClass="table-title-wrapper"
+            variant="text"
+            animation="wave"
+          />
         ) : (
           <Text font="semiBold" customClass="font20">
             {config.title}

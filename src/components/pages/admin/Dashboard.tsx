@@ -1,4 +1,5 @@
 import Box from "../../common/Box";
+
 function Dashboard() {
   return (
     <Box className="section-wrapper">

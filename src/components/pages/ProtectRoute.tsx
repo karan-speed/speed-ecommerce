@@ -1,21 +1,32 @@
 import { Outlet, Navigate } from "react-router-dom";
 import Box from "../common/Box";
 import "../styles/public.scss";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppSelector } from "../../redux/hooks";
 import type { IProtectRoute } from "../../types";
 import Header from "../Header";
 import Sidebar from "./admin/Sidebar";
-import { hideLoader } from "../../redux/features/loader/loader.slice";
+import { useEffect, useState } from "react";
+import PageLoader from "../common/PageLoader";
 
 function ProtectRoute({ allowRoles }: IProtectRoute) {
   const { access_token, user } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
-
   const isAuthorizeForAdmin = user?.role === "ADMIN";
   const isAuthorizeForUser = user?.role === "USER";
-  setTimeout(() => {
-    dispatch(hideLoader());
-  }, 500);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <PageLoader customClass="page-loader" loading={loading} />;
+  }
+
   if (!access_token || !user) {
     return <Navigate to="/login" replace />;
   }
@@ -23,6 +34,7 @@ function ProtectRoute({ allowRoles }: IProtectRoute) {
   if (!allowRoles.includes(user.role)) {
     return <Navigate to="/login" />;
   }
+
   return (
     <>
       <Box className="app-root">

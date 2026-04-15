@@ -3,17 +3,10 @@ import Box from "../../common/Box";
 import Text from "../../common/Text";
 import { Link, useNavigate } from "react-router-dom";
 import { buttonIcons } from "../../images";
-import {
-  Breadcrumbs,
-  List,
-  MenuItem,
-  Popper,
-  Skeleton,
-  Tooltip,
-} from "@mui/material";
+import { Breadcrumbs, List, MenuItem, Popper, Tooltip } from "@mui/material";
 import { CallAPIInterface } from "../../constants";
 import Dialog from "../../common/Dialog";
-import { dialogText } from "../../messages";
+import { copiedText, dialogText } from "../../messages";
 import Button from "../../common/Button";
 import CustomSwitch from "../../common/CustomSwitch";
 import ProductForm from "./ProductForm";
@@ -21,9 +14,11 @@ import type { TProduct } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   deleteProduct,
-  setProduct,
   updateProduct,
 } from "../../../redux/features/product/product.slice";
+import CustomSkeleton from "../../common/CustomSkeleton";
+import Copy from "../../common/Copy";
+import CustomPopper from "../../common/CustomPopper";
 
 interface DataProps {
   previousNavlink: string;
@@ -38,10 +33,7 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [openArchiveDialog, setArchiveDialog] = useState(false);
   const [openDeleteDailog, setDeleteDialog] = useState(false);
-  const copyId = async (text: string) => {
-    const id = await navigator.clipboard.writeText(text);
-    return id;
-  };
+
   const handleArchiveClick = (event: React.MouseEvent<HTMLElement>) => {
     setMoreAnchorEl((prev) => (prev ? null : event.currentTarget));
   };
@@ -131,7 +123,10 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
                 customClass="product-spotlight-switch"
               />
             </Box>
-            <Box onClick={handleArchiveClick}>
+            <Box
+              sx={{ display: "inline-flex", cursor: "pointer" }}
+              onClick={handleArchiveClick}
+            >
               {buttonIcons.horizontalThreeDots}
             </Box>
           </Box>
@@ -152,13 +147,41 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
       </Box>
     );
   }, [data?.visiblity, data?.spotlight]);
+
+  const menuItems = [
+    {
+      lable: "Archive",
+      onClick: () => {
+        setArchiveDialog(true);
+        setMoreAnchorEl(null);
+      },
+    },
+    {
+      lable: "Edit",
+      onClick: () => {
+        handleEditDailog();
+        setMoreAnchorEl(null);
+      },
+    },
+    {
+      lable: "Delete",
+      onClick: () => {
+        setDeleteDialog(true);
+        setMoreAnchorEl(null);
+      },
+    },
+  ];
   return (
     <>
       {" "}
       <Box component={"nav"}>
         {loading ? (
           <>
-            <Skeleton variant="text" width={"40%"} />
+            <CustomSkeleton
+              customClass="product-nav-wrapper"
+              variant="text"
+              width={"40%"}
+            />
           </>
         ) : (
           <Breadcrumbs
@@ -186,7 +209,10 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
       <Box className="header-content">
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           {loading ? (
-            <Skeleton variant="text" height={"30px"} width={"60%"} />
+            <CustomSkeleton
+              customClass="product-title-wrapper"
+              variant="text"
+            />
           ) : (
             <Text customClass="font28 font-SemiBold">{data?.name}</Text>
           )}
@@ -198,40 +224,24 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
             }}
           >
             {loading ? (
-              <Skeleton variant="rectangular" width={"300px"} />
+              <CustomSkeleton
+                customClass="product-status-wrapper"
+                variant="rectangular"
+              />
             ) : (
               CachedProductStatus
             )}
 
-            <Box display={"flex"} alignItems={"center"}>
+            <Box display={"flex"} alignItems={"center"} mt={2}>
               {loading ? (
-                <Skeleton
-                  width={"200px"}
-                  sx={{ margin: "20px 0 0 0" }}
+                <CustomSkeleton
+                  customClass="copy-text-wrapper"
                   variant="rounded"
-                  height={"30px"}
                 />
               ) : (
                 <>
                   <Text customClass="detail-id font-regular">{data?.id}</Text>
-                  <Tooltip
-                    onClick={() => data?.id && copyId(data.id)}
-                    slotProps={{
-                      tooltip: {
-                        sx: {
-                          background: "#0a193e !important",
-                          color: "white",
-                          fontFamily: "Outfit-SemiBold",
-                          height: "auto",
-                          fontSize: "12px",
-                          cursor: "pointer",
-                        },
-                      },
-                    }}
-                    title="Copied"
-                  >
-                    {buttonIcons.copyIcon}
-                  </Tooltip>
+                  <Copy value={String(data?.id)} />
                 </>
               )}
             </Box>
@@ -240,73 +250,30 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
 
         <Box>
           {loading ? (
-            <Skeleton variant="text" sx={{ marginBlock: "12px" }} />
+            <CustomSkeleton
+              customClass="product-description-wrapper"
+              variant="text"
+              sx={{ marginBlock: "12px" }}
+            />
           ) : (
             <Text customClass="font14 grey-text">{data?.description}</Text>
           )}
         </Box>
       </Box>
-      <Popper
-        sx={{
-          borderRadius: "8px",
-          background: "white",
-          boxShadow: "0 2px 6px 0 rgba(0, 0, 0, 0.15)",
-          marginLeft: "-14px",
-          marginTop: "3px",
-          width: "180px",
-        }}
+      <CustomPopper
+        arrow={true}
         open={Boolean(MoreAnchorEl)}
         anchorEl={MoreAnchorEl}
+        placement="bottom-end"
       >
-        <List>
-          <>
-            <Box sx={{ padding: "10px" }}>
-              <MenuItem
-                onClick={() => {
-                  setArchiveDialog(true);
-                  setMoreAnchorEl(null);
-                }}
-              >
-                <Text
-                  gap={1}
-                  customClass="grey-text flex-text"
-                  sx={{ padding: "2px 35px 2px 16px" }}
-                >
-                  {buttonIcons.archive} Archive
-                </Text>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleEditDailog();
-                  setMoreAnchorEl(null);
-                }}
-              >
-                <Text
-                  gap={1}
-                  customClass="grey-text flex-text"
-                  sx={{ padding: "2px 35px 2px 16px" }}
-                >
-                  {buttonIcons.edit} Edit
-                </Text>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setDeleteDialog(true);
-                  setMoreAnchorEl(null);
-                }}
-              >
-                <Text
-                  gap={1}
-                  customClass="grey-text flex-text"
-                  sx={{ padding: "2px 35px 2px 16px" }}
-                >
-                  {buttonIcons.delete} Delete
-                </Text>
-              </MenuItem>
-            </Box>
-          </>
-        </List>
-      </Popper>
+        <Box>
+          {menuItems.map((menu) => (
+            <MenuItem key={menu.lable} onClick={() => menu.onClick()}>
+              <Text customClass="font-Medium font14">{menu.lable}</Text>
+            </MenuItem>
+          ))}
+        </Box>
+      </CustomPopper>
       <Dialog
         isForm={false}
         customClass="product-archive-dialog"

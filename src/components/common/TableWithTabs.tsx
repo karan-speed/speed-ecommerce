@@ -1,27 +1,22 @@
-import {
-  Tab,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Table,
-  TableBody,
-  TableCell,
-} from "@mui/material";
+import { Tab, TableContainer, Table, TableBody } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import Box from "./Box";
 import "../styles/tab.scss";
 import { useNavigate } from "react-router-dom";
-import type { Field, ICategoryGetResponse, Products } from "../../types";
-
+import type { Field, TCategoryList, TProductsList } from "../../types";
+import TableItem from "./TableItem";
+import TableHeader from "./TableHeader";
+import LoadingRow from "./LoadingRow";
+import EmptyRow from "./EmptyRow";
 interface TabTableProps {
   tabs: { label: string; value: string }[];
   value: string;
   isNavigate?: boolean;
-
+  loading: boolean;
   elementForRedirection: string;
   onTabChange: (event: React.SyntheticEvent, newValue: string) => void;
   columns: Field[];
-  data: Products[] | ICategoryGetResponse[];
+  data: TProductsList[] | TCategoryList[];
 }
 export default function TableWithTabs({
   tabs,
@@ -30,9 +25,29 @@ export default function TableWithTabs({
   isNavigate = false,
   elementForRedirection,
   data,
+  loading,
   onTabChange,
 }: TabTableProps) {
   const navigate = useNavigate();
+  const handleRowClick = (id: string) => {
+    if (!isNavigate) return;
+    navigate(`/${elementForRedirection}/${id}`);
+  };
+  const renderTableBody = () => {
+    if (loading) return <LoadingRow columns={columns} />;
+
+    if (!data.length) return <EmptyRow colSpan={columns.length} />;
+
+    return data.map((row) => (
+      <TableItem
+        key={String(row.id)}
+        row={row}
+        columns={columns}
+        onClick={() => handleRowClick(row.id)}
+      />
+    ));
+  };
+
   return (
     <>
       <TabContext value={value}>
@@ -46,59 +61,8 @@ export default function TableWithTabs({
           <Box className="main-content">
             <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
               <Table>
-                <TableHead>
-                  <TableRow>
-                    {columns.map((col) => (
-                      <TableCell
-                        key={String(col.key)}
-                        sx={{
-                          position: "sticky",
-                          top: 0,
-                          zIndex: 2,
-                          backgroundColor: "#fff",
-                          minWidth: "170px",
-                          paddingLeft: "38px",
-                        }}
-                      >
-                        {col.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {data.length > 0 ? (
-                    data.map((row) => (
-                      <TableRow
-                        onClick={
-                          isNavigate
-                            ? () =>
-                                navigate(`/${elementForRedirection}/${row.id}`)
-                            : undefined
-                        }
-                        key={row.id}
-                      >
-                        {columns.map((col) => (
-                          <TableCell
-                            key={String(col.key)}
-                            sx={{
-                              minWidth: "170px",
-                              paddingLeft: "38px",
-                            }}
-                          >
-                            {col.render ? col.render(row) : Object.entries(row)}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={columns.length} align="center">
-                        Not found
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
+                <TableHeader columns={columns} />
+                <TableBody>{renderTableBody()}</TableBody>
               </Table>
             </TableContainer>
           </Box>

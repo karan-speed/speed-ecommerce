@@ -7,7 +7,7 @@ import { speedPreloader } from "../images";
 interface PageLoaderProps {
   customClass?: string;
   loading: boolean;
-  text: string;
+  text?: string;
 }
 function PageLoader({ customClass, loading, text }: PageLoaderProps) {
   const classess = classNames(`backdrop-loader ${customClass}`);
