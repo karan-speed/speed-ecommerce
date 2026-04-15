@@ -3,14 +3,7 @@ import Box from "../../common/Box";
 import Text from "../../common/Text";
 import { Link, useNavigate } from "react-router-dom";
 import { buttonIcons } from "../../images";
-import {
-  Breadcrumbs,
-  List,
-  MenuItem,
-  Popper,
-  Skeleton,
-  Tooltip,
-} from "@mui/material";
+import { Breadcrumbs, List, MenuItem, Popper, Tooltip } from "@mui/material";
 import { CallAPIInterface } from "../../constants";
 import Dialog from "../../common/Dialog";
 import { dialogText } from "../../messages";
@@ -21,9 +14,9 @@ import type { TProduct } from "../../../types";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   deleteProduct,
-  setProduct,
   updateProduct,
 } from "../../../redux/features/product/product.slice";
+import CustomSkeleton from "../../common/CustomSkeleton";
 
 interface DataProps {
   previousNavlink: string;
@@ -158,7 +151,11 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
       <Box component={"nav"}>
         {loading ? (
           <>
-            <Skeleton variant="text" width={"40%"} />
+            <CustomSkeleton
+              customClass="product-nav-wrapper"
+              variant="text"
+              width={"40%"}
+            />
           </>
         ) : (
           <Breadcrumbs
@@ -186,7 +183,10 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
       <Box className="header-content">
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           {loading ? (
-            <Skeleton variant="text" height={"30px"} width={"60%"} />
+            <CustomSkeleton
+              customClass="product-title-wrapper"
+              variant="text"
+            />
           ) : (
             <Text customClass="font28 font-SemiBold">{data?.name}</Text>
           )}
@@ -198,18 +198,19 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
             }}
           >
             {loading ? (
-              <Skeleton variant="rectangular" width={"300px"} />
+              <CustomSkeleton
+                customClass="product-status-wrapper"
+                variant="rectangular"
+              />
             ) : (
               CachedProductStatus
             )}
 
             <Box display={"flex"} alignItems={"center"}>
               {loading ? (
-                <Skeleton
-                  width={"200px"}
-                  sx={{ margin: "20px 0 0 0" }}
+                <CustomSkeleton
+                  customClass="copy-text-wrapper"
                   variant="rounded"
-                  height={"30px"}
                 />
               ) : (
                 <>
@@ -240,7 +241,11 @@ function DetailsHeader({ previousNavlink, loading }: DataProps) {
 
         <Box>
           {loading ? (
-            <Skeleton variant="text" sx={{ marginBlock: "12px" }} />
+            <CustomSkeleton
+              customClass="product-description-wrapper"
+              variant="text"
+              sx={{ marginBlock: "12px" }}
+            />
           ) : (
             <Text customClass="font14 grey-text">{data?.description}</Text>
           )}

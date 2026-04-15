@@ -58,9 +58,9 @@ export default function Products() {
     }
     return products;
   }, [products, value]);
-  if (loading || !products) {
-    return <PageLoader loading={loading} text="Loading" />;
-  }
+  // if (loading || !products) {
+  //   return <PageLoader loading={loading} text="Loading" />;
+  // }
   return (
     <Box
       sx={{
@@ -80,6 +80,7 @@ export default function Products() {
         description="Easily manage products by adding, viewing, updating, or deleting them. Keep your data well-organized and up to date for a better user experience."
       >
         <TableWithTabs
+          loading={loading}
           isNavigate={true}
           key={Math.random().toLocaleString()}
           tabs={commonTabs}

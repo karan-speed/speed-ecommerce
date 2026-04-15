@@ -5,9 +5,8 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { CallAPIInterface, categoryColumns, commonTabs } from "../../constants";
 import PageModule from "../../common/PageModule";
 import CategoryCreate from "./CategoryCreate";
-import type { TCategory } from "../../../types";
+import type { TCategoryList } from "../../../types";
 import { setCategories } from "../../../redux/features/category/category.slice";
-import PageLoader from "../../common/PageLoader";
 
 function Categories() {
   const [value, setValue] = useState("all");
@@ -25,7 +24,7 @@ function Categories() {
   const handleGetCategory = async () => {
     try {
       setLoading(true);
-      const data = await CallAPIInterface<TCategory[]>({
+      const data = await CallAPIInterface<TCategoryList[]>({
         method: "GET",
         url: "/categories",
         isPrivate: true,
@@ -53,9 +52,7 @@ function Categories() {
   useEffect(() => {
     handleGetCategory();
   }, []);
-  if (loading || !categories) {
-    return <PageLoader loading={loading} text="Loading" />;
-  }
+
   return (
     <Box
       sx={{
@@ -75,6 +72,7 @@ function Categories() {
         description="Easily manage categories by adding, viewing, updating, or deleting them. Keep your data well-organized and up to date for a better user experience."
       >
         <TableWithTabs
+          loading={loading}
           isNavigate={true}
           elementForRedirection="categories"
           tabs={commonTabs}

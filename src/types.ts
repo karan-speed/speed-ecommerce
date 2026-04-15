@@ -1,5 +1,12 @@
 import type { BoxProps, ButtonProps, InputBaseProps } from "@mui/material";
 import { buttonIcons } from "./components/images";
+export type TCategorySummery = {
+  total_products: number;
+  total_stock: number;
+  average_price: number;
+  active_products: number;
+  spotlighted_products: number;
+};
 export interface AlertMessageProps {
   open: boolean;
   onClose: () => void;

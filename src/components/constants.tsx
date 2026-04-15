@@ -176,7 +176,6 @@ export const generateNewSession = async () => {
 };
 export const handleLogin = async (values: TLoginForm) => {
   try {
-    store.dispatch(showLoader());
     const data = await CallAPIInterface<TUserLogin>({
       method: "POST",
       data: values,
@@ -275,7 +274,7 @@ export const categoryColumns = [
   {
     key: "id",
     label: "Category ID",
-    render: (row: any) => (
+    render: (row: { id: string }) => (
       <Input
         elementClass="category-input-element"
         customClass="table-input"
@@ -287,22 +286,23 @@ export const categoryColumns = [
   {
     key: "name",
     label: "Category Name",
-    render: (row: any) => <Text>{row.name}</Text>,
+    render: (row: { name: string }) => <Text>{row.name}</Text>,
   },
   {
     key: "visiblity",
     label: "Status",
-    render: (row: any) => (row.visiblity ? "Available" : "Archived"),
+    render: (row: { visiblity: boolean }) =>
+      row.visiblity ? "Available" : "Archived",
   },
   {
     key: "createdAt",
     label: "Created on",
-    render: (row: any) => formateTime(row.created_at),
+    render: (row: { created_at: number }) => formateTime(row.created_at),
   },
   {
     key: "updatedAt",
     label: "Updated on",
-    render: (row: any) => formateTime(row.updated_at),
+    render: (row: { updated_at: number }) => formateTime(row.updated_at),
   },
 ];
 
@@ -325,22 +325,23 @@ export const productAllDetailColumns: ProductColumnProps[] = [
         {
           label: "Status",
           key: "visiblity",
-          render: (row: any) => (row.visiblity ? "Available" : "Archived"),
+          render: (row: { visiblity: boolean }) =>
+            row.visiblity ? "Available" : "Archived",
         },
         {
           label: "Date Created",
           key: "created_at",
-          render: (row: any) => formateTime(row.created_at),
+          render: (row: { created_at: number }) => formateTime(row.created_at),
         },
         {
           label: "Date Updated",
           key: "updated_at",
-          render: (row: any) => formateTime(row.updated_at),
+          render: (row: { updated_at: number }) => formateTime(row.updated_at),
         },
         {
           label: "Category Name",
           key: "CategoryName",
-          render: (row: any) =>
+          render: (row: { category: { name: string } }) =>
             row.category.name ? row.category.name : "Not found",
         },
       ],
@@ -351,7 +352,7 @@ export const productAllDetailColumns: ProductColumnProps[] = [
         {
           label: "Thumbnail",
           key: "thumbnail",
-          render: (row: any) =>
+          render: (row: { thumbnail: string; name: string }) =>
             row.thumbnail ? (
               <img
                 src={row.thumbnail}
@@ -400,27 +401,31 @@ export const categoryAllSatsColumns: CategoryColumnProps[] = [
         {
           key: "totalProducts",
           label: "Total Products",
-          render: (row: any) => row.total_products && row.total_products,
+          render: (row: { total_products: number }) =>
+            row.total_products && row.total_products,
         },
         {
           key: "totalStock",
           label: "Total Stock",
-          render: (row: any) => row.total_stock && row.total_stock,
+          render: (row: { total_stock: number }) =>
+            row.total_stock && row.total_stock,
         },
         {
           key: "averagePrice",
           label: "Average Price",
-          render: (row: any) => formatPrice(row.average_price),
+          render: (row: { average_price: number }) =>
+            formatPrice(row.average_price),
         },
         {
           key: "activeProducts",
           label: "Active Products",
-          render: (row: any) => row.active_products && row.active_products,
+          render: (row: { active_products: number }) =>
+            row.active_products && row.active_products,
         },
         {
           key: "spotlightedProducts",
           label: "Spotlighted Products",
-          render: (row: any) =>
+          render: (row: { spotlighted_products: number }) =>
             row.spotlighted_products && row.spotlighted_products,
         },
       ],
@@ -431,7 +436,7 @@ export const productColumns: Field[] = [
   {
     key: "id",
     label: "Product ID",
-    render: (row: any) => (
+    render: (row: { id: string }) => (
       <Input
         elementClass="product-input-element"
         customClass="table-input"
@@ -443,27 +448,30 @@ export const productColumns: Field[] = [
   {
     key: "name",
     label: "Product Name",
-    render: (row: any) => <Text customClass="table-input">{row.name}</Text>,
+    render: (row: { name: string }) => (
+      <Text customClass="table-input">{row.name}</Text>
+    ),
   },
   {
     key: "price",
     label: "Price",
-    render: (row: any) => formatPrice(row.price),
+    render: (row: { price: number }) => formatPrice(row.price),
   },
   {
     key: "visiblity",
     label: "Status",
-    render: (row: any) => (row.visiblity ? "Available" : "Archived"),
+    render: (row: { visiblity: boolean }) =>
+      row.visiblity ? "Available" : "Archived",
   },
   {
     key: "createdAt",
     label: "Created on",
-    render: (row: any) => formateTime(row.created_at),
+    render: (row: { created_at: number }) => formateTime(row.created_at),
   },
   {
     key: "updatedAt",
     label: "Updated on",
-    render: (row: any) => formateTime(row.updated_at),
+    render: (row: { updated_at: number }) => formateTime(row.updated_at),
   },
 ];
 
@@ -515,4 +523,9 @@ export const formatPrice = (amount: number, currency = "INR") => {
     style: "currency",
     currency,
   }).format(amount);
+};
+
+export const headerCellStyle = {
+  minWidth: "170px !important",
+  paddingLeft: "38px !important",
 };

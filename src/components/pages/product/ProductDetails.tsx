@@ -4,11 +4,6 @@ import DetailsHeader from "./ProductDetailsHeader";
 import { CallAPIInterface, productAllDetailColumns } from "../../constants";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import {
-  hideLoader,
-  showLoader,
-} from "../../../redux/features/loader/loader.slice";
-
 import DataTable from "../../common/DataTable";
 import {
   DetailsSection,
@@ -17,7 +12,6 @@ import {
 } from "../../common/Section";
 import type { TProduct } from "../../../types";
 import { setProduct } from "../../../redux/features/product/product.slice";
-import PageLoader from "../../common/PageLoader";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -30,7 +24,7 @@ function ProductDetails() {
     try {
       if (id) {
         setLoading(true);
-        dispatch(showLoader());
+
         const data = await CallAPIInterface<TProduct>({
           method: "GET",
           url: `/products/${id}`,
@@ -41,7 +35,6 @@ function ProductDetails() {
       console.error(error);
     } finally {
       setLoading(false);
-      dispatch(hideLoader());
     }
   };
 
@@ -68,9 +61,7 @@ function ProductDetails() {
       handleGetProduct();
     }
   }, [id]);
-  if (loading || !product) {
-    return <PageLoader loading={loading} text="Loading" />;
-  }
+
   return (
     <>
       <Box customClass="product-detail-wrapper">

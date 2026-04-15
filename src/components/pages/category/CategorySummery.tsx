@@ -1,18 +1,10 @@
 import { TableCell, TableRow } from "@mui/material";
-
-import type { CategoryColumnProps } from "../../../types";
+import type { CategoryColumnProps, TCategorySummery } from "../../../types";
 import Text from "../../common/Text";
 import { renderDetailsField } from "../../constants";
-type CategorySummeryType = {
-  total_products: number;
-  total_stock: number;
-  average_price: number;
-  active_products: number;
-  spotlighted_products: number;
-};
 
 interface TCategorySats {
-  data: CategorySummeryType;
+  data: TCategorySummery;
   config: CategoryColumnProps["summery"];
 }
 export default function CategorySummery({ data, config }: TCategorySats) {

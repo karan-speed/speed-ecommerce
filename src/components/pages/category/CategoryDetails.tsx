@@ -6,7 +6,6 @@ import Box from "../../common/Box";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setCategoryDetails } from "../../../redux/features/category/category.slice";
 import Text from "../../common/Text";
-import { TableCell, TableRow } from "@mui/material";
 import DataTable from "../../common/DataTable";
 import CategorySummery from "./CategorySummery";
 import CategoryProductList from "./CategoryProductList";
