@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import Box from "../../common/Box";
-import TableWithTabs from "../../common/TableWithTabs";
+import { useEffect, useMemo, useState } from "react";
+import Box from "../../common/Box/Box";
+import TableWithTabs from "../../common/Table/TableWithTabs";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { CallAPIInterface, commonTabs, productColumns } from "../../constants";
-import PageModule from "../../common/PageModule";
 import ProductForm from "./ProductForm";
-import { setProducts } from "../../../redux/features/product/product.slice";
+import EntityListPage from "../../common/EntityListPage";
 import type { TProductsList } from "../../../types";
-import PageLoader from "../../common/PageLoader";
+import { setProducts } from "../../../redux/product/product.slice";
 export default function Products() {
   const [value, setValue] = useState("all");
   const [isCreateClicked, setisCreateClicked] = useState(false);
@@ -22,32 +21,26 @@ export default function Products() {
     setisCreateClicked(false);
   };
 
-  const handleGetProduct = useCallback(async () => {
+  const createProductButtonHandler = async () => {
+    setisCreateClicked(true);
+  };
+  const getProducts = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const data = await CallAPIInterface<TProductsList[]>({
+      const response = await CallAPIInterface<TProductsList[]>({
         method: "GET",
         url: "/products",
         isPrivate: true,
       });
-      dispatch(setProducts(data));
+      dispatch(setProducts(response));
     } catch (error) {
-      setTabData({
-        all: [],
-        available: [],
-        archive: [],
-      });
       console.error(error);
     } finally {
       setLoading(false);
     }
-  }, [dispatch]);
-
-  const createProductButtonHandler = async () => {
-    setisCreateClicked(true);
   };
   useEffect(() => {
-    handleGetProduct();
+    getProducts();
   }, []);
   const filteredData = useMemo(() => {
     if (value === "available") {
@@ -58,31 +51,18 @@ export default function Products() {
     }
     return products;
   }, [products, value]);
-  // if (loading || !products) {
-  //   return <PageLoader loading={loading} text="Loading" />;
-  // }
+
   return (
-    <Box
-      sx={{
-        width: "100%",
-        fontFamily: "Outfit-Regular",
-        fontWeight: "400",
-        fontSize: "1rem",
-        lineHeight: 1.5,
-        letterSpacing: "0.00938em",
-        minHeight: "unset",
-      }}
-    >
-      <PageModule
-        title="Products"
-        buttonLable="Add Product"
-        onCreate={createProductButtonHandler}
+    <Box customClass="section-wrapper">
+      <EntityListPage
+        entity="Products"
+        buttonLabel="Add Product"
+        onSubmit={createProductButtonHandler}
         description="Easily manage products by adding, viewing, updating, or deleting them. Keep your data well-organized and up to date for a better user experience."
       >
         <TableWithTabs
           loading={loading}
           isNavigate={true}
-          key={Math.random().toLocaleString()}
           tabs={commonTabs}
           value={value}
           elementForRedirection="products"
@@ -93,10 +73,10 @@ export default function Products() {
         <ProductForm
           isOpen={isCreateClicked}
           isEdit={false}
-          onSuccess={handleGetProduct}
+          onSuccess={() => getProducts()}
           onClose={handleCreateClose}
         />
-      </PageModule>
+      </EntityListPage>
     </Box>
   );
 }

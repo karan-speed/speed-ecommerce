@@ -1,11 +1,13 @@
-import Box from "../../common/Box";
-import Text from "../../common/Text";
+import Box from "../../common/Box/Box";
+import Text from "../../common/Text/Text";
 import { logoName } from "../../messages";
-import { handleLogOut } from "../../constants";
+import { logOut } from "../../../redux/thunks";
 import { buttonIcons, logo } from "../../images";
-import Button from "../../common/Button";
+import Button from "../../common/Button/Button";
+import { useAppDispatch } from "../../../redux/hooks";
 
 function UserHeader() {
+  const dispatch = useAppDispatch();
   return (
     <Box className="ecommerce-header">
       <Box className="ecommerce-header-container">
@@ -16,7 +18,7 @@ function UserHeader() {
           </Box>
         </Box>
         <Box>
-          <Button onClick={handleLogOut} customClass="setting">
+          <Button onClick={() => dispatch(logOut())} customClass="setting">
             {buttonIcons.settings}
           </Button>
         </Box>

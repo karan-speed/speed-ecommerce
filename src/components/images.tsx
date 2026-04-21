@@ -216,7 +216,7 @@ export const DropdownIcon = (props: any) => {
 export const buttonIcons = {
   google: <img src={googleIcon} height={20} width={20} alt="google-icon" />,
   email: <EmailIcon />,
-  add: <AddIcon />,
+  add: <AddIcon className="add-icon" />,
   back: <ArrowBackIosIcon />,
   next: <ArrowForwardIosIcon />,
   visible: <VisibilityIcon />,

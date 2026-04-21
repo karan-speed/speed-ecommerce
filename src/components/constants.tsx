@@ -5,29 +5,22 @@ import type {
   Field,
   TProduct,
   ProductColumnProps,
-  TRegisterForm,
-  TLoginForm,
   TCategoryDetails,
-  TUserRegister,
-  TUserLogin,
 } from "../types";
 import classNames from "classnames";
-import "./styles/Diagonal.scss";
-import "./styles/Input.scss";
+import "../styles/Diagonal.scss";
+import "../styles/Input.scss";
 import { store } from "../redux/store";
-import Box from "./common/Box";
+import Box from "./common/Box/Box";
 import axios, { isAxiosError } from "axios";
-import { setCredentials } from "../redux/features/persisted/auth/auth.slice";
-import { showToast } from "../redux/features/error/error.slice";
-import {
-  logout,
-  setAccessToken,
-} from "../redux/features/persisted/auth/auth.slice";
-import { hideLoader, showLoader } from "../redux/features/loader/loader.slice";
-import { formateTime } from "../utils";
-import Input from "./common/Input";
-import Text from "./common/Text";
-import Copy from "./common/Copy";
+import { showToast } from "../redux/error/error.slice";
+import { logout } from "../redux/persisted/auth/auth.slice";
+import { hideLoader, showLoader } from "../redux/loader/loader.slice";
+import formateTime from "../utils/formateTime";
+import Input from "./common/Input/Input";
+import Text from "./common/Text/Text";
+import Copy from "./common/Copy/Copy";
+import { generateToken, logOut } from "../redux/thunks";
 
 type ExecuteApiRequestOptions = {
   method: Method;
@@ -87,27 +80,28 @@ export const CallAPIInterface = async <T = unknown,>({
   const jwtOptions = getHeaders(method, data, url, params!, isPrivate, headers);
   return new Promise(async (resolve, reject) => {
     if (Object.keys(jwtOptions)?.length) {
-      let axiosObj = {
+      let config = {
         ...jwtOptions,
       };
-      let apiCall = axios(axiosObj);
+      let apiCall = axios(config);
       apiCall
         .then((res) => {
           resolve(res.data);
         })
         .catch((err) => {
           const errors = err;
-          console.log(errors);
-          const errorStatus = errors.status;
+          const errorStatus = errors.response.status;
           const errorType = errors.response?.data.type;
           const errorMessage = errors.response.data.message;
+          console.error(errorMessage);
           if (isAxiosError(err)) {
-            console.log(errorType);
             if (errorType === "token_expired") {
-              generateNewSession()
-                .then(async (res: any) => {
+              store
+                .dispatch(generateToken())
+                .unwrap()
+                .then(async (res: { access_token: string }) => {
                   if (jwtOptions.headers) {
-                    jwtOptions.headers.Authorization = res?.access_token;
+                    jwtOptions.headers.Authorization = res.access_token;
                   }
                   await axios({
                     ...jwtOptions,
@@ -120,34 +114,26 @@ export const CallAPIInterface = async <T = unknown,>({
                       severity: "error",
                     }),
                   );
-                  store.dispatch(showLoader());
-                  console.log(
-                    error.response.data.type,
-                    "from generate token failed",
-                  );
-                  (async () =>
-                    handleLogOut().catch(() => store.dispatch(logout())))();
-
+                  (reject(err), store.dispatch(showLoader({})));
+                  store.dispatch(logOut());
                   store.dispatch(hideLoader());
                 });
             }
           }
 
-          if (
-            errorType !== "token_expired" &&
-            errorStatusCodes.includes(errorStatus)
-          ) {
+          if (errorStatusCodes.includes(errorStatus)) {
             store.dispatch(
               showToast({
                 message: errorMessage,
                 severity: "error",
               }),
             );
-            return;
+            return reject(err);
           }
 
           if (serverErrorStatusCodes.includes(errorStatus)) {
             expireSession();
+            return reject(err);
           }
         });
     } else {
@@ -158,93 +144,24 @@ export const CallAPIInterface = async <T = unknown,>({
 export const expireSession = () => {
   store.dispatch(logout());
 };
-export const generateNewSession = async () => {
-  return new Promise(async (resolve, reject) => {
-    return await axios<{ access_token: string }>({
-      baseURL: import.meta.env.VITE_API_BASE_URL as string,
-      method: "POST",
-      url: "/generate-session",
-      withCredentials: true,
-    })
-      .then(async (response) => {
-        resolve(response.data);
-        store.dispatch(setAccessToken(response.data.access_token!));
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-export const handleLogin = async (values: TLoginForm) => {
-  try {
-    const data = await CallAPIInterface<TUserLogin>({
-      method: "POST",
-      data: values,
-      url: "/login",
-      isPrivate: false,
-    });
+// export const generateToken = async () => {
+//   return new Promise(async (resolve, reject) => {
+//     return await axios<{ access_token: string }>({
+//       baseURL: import.meta.env.VITE_API_BASE_URL as string,
+//       method: "POST",
+//       url: "/generate-token",
+//       withCredentials: true,
+//     })
+//       .then(async (response) => {
+//         resolve(response.data);
+//         store.dispatch(setAccessToken(response.data.access_token!));
+//       })
+//       .catch((error) => {
+//         reject(error);
+//       });
+//   });
+// };
 
-    store.dispatch(
-      setCredentials({
-        user: data.user,
-        access_token: data.access_token,
-      }),
-    );
-  } catch (error) {
-    console.error(error);
-  }
-};
-export const handleCategory = async () => {
-  store.dispatch(showLoader());
-
-  try {
-    const data = await CallAPIInterface<{
-      message: string;
-      category: unknown;
-    }>({
-      method: "GET",
-      url: "/categories",
-      isPrivate: true,
-    });
-    return data;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    store.dispatch(hideLoader());
-  }
-};
-export const handleRegister = async (values: TRegisterForm) => {
-  try {
-    store.dispatch(showLoader());
-    const data = await CallAPIInterface<TUserRegister>({
-      method: "POST",
-      data: values,
-      url: "/register",
-      isPrivate: false,
-    });
-    return data;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    store.dispatch(hideLoader());
-  }
-};
-
-export const handleLogOut = async () => {
-  try {
-    store.dispatch(showLoader());
-    await CallAPIInterface({
-      method: "POST",
-      url: "/logout",
-      isPrivate: true,
-    });
-    store.dispatch(logout());
-  } catch (error) {
-    console.error(error);
-  } finally {
-    store.dispatch(hideLoader());
-  }
-};
 export const DiagonalDiv = ({
   src,
   children,
@@ -255,11 +172,11 @@ export const DiagonalDiv = ({
   return (
     <>
       <Box
-        className="vector-diagonal-div"
+        customClass="vector-diagonal-div"
         sx={{ backgroundImage: `url(${src})` }}
       />
-      <Box className="vector-diagonal-sub-div" />
-      <Box {...props} className={classes}>
+      <Box customClass="vector-diagonal-sub-div" />
+      <Box {...props} customClass={classes}>
         {children}
       </Box>
     </>
@@ -294,7 +211,7 @@ export const categoryColumns = [
   {
     key: "name",
     label: "Category Name",
-    render: (row: { name: string }) => <Text>{row.name}</Text>,
+    render: (row: { name: string }) => <Text size={14}>{row.name}</Text>,
   },
   {
     key: "visiblity",

@@ -1,44 +1,39 @@
 import { useEffect, useMemo, useState } from "react";
-import Box from "../../common/Box";
-import TableWithTabs from "../../common/TableWithTabs";
+import Box from "../../common/Box/Box";
+import TableWithTabs from "../../common/Table/TableWithTabs";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { CallAPIInterface, categoryColumns, commonTabs } from "../../constants";
-import PageModule from "../../common/PageModule";
-import CategoryCreate from "./CategoryCreate";
+import EntityListPage from "../../common/EntityListPage";
+import CategoryForm from "./CategoryForm";
 import type { TCategoryList } from "../../../types";
-import { setCategories } from "../../../redux/features/category/category.slice";
+import { setCategories } from "../../../redux/category/category.slice";
 
 function Categories() {
   const [value, setValue] = useState("all");
-  const [isCreateClicked, setisCreateClicked] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const categories = useAppSelector((state) => state.category.categories);
-  const handleTabChange = (event: any, newValue: any) => {
+  const handleTabChange = (_event: any, newValue: any) => {
     setValue(newValue);
   };
-  const handleCreateClose = () => {
-    setisCreateClicked(false);
-  };
+  const openCreate = () => setIsCreateOpen(true);
+  const closeCreate = () => setIsCreateOpen(false);
 
-  const handleGetCategory = async () => {
+  const getCategories = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const data = await CallAPIInterface<TCategoryList[]>({
+      const response = await CallAPIInterface<TCategoryList[]>({
         method: "GET",
         url: "/categories",
         isPrivate: true,
       });
-      dispatch(setCategories(data));
+      dispatch(setCategories(response));
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const createCategoryButtonHandler = async () => {
-    setisCreateClicked(true);
   };
   const filteredData = useMemo(() => {
     if (value === "available") {
@@ -50,25 +45,15 @@ function Categories() {
     return categories;
   }, [categories, value]);
   useEffect(() => {
-    handleGetCategory();
+    getCategories();
   }, []);
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        fontFamily: "Outfit-Regular",
-        fontWeight: "400",
-        fontSize: "1rem",
-        lineHeight: 1.5,
-        letterSpacing: "0.00938em",
-        minHeight: "unset",
-      }}
-    >
-      <PageModule
-        title="Categories"
-        buttonLable="Add Category"
-        onCreate={createCategoryButtonHandler}
+    <Box customClass="section-wrapper">
+      <EntityListPage
+        entity="Categories"
+        buttonLabel="Add Category"
+        onSubmit={openCreate}
         description="Easily manage categories by adding, viewing, updating, or deleting them. Keep your data well-organized and up to date for a better user experience."
       >
         <TableWithTabs
@@ -81,13 +66,9 @@ function Categories() {
           columns={categoryColumns}
           data={filteredData}
         />
-        {isCreateClicked && (
-          <CategoryCreate
-            isCreateClicked={isCreateClicked}
-            handlerCreateClick={handleCreateClose}
-          />
-        )}
-      </PageModule>
+
+        <CategoryForm open={isCreateOpen} onClose={closeCreate} />
+      </EntityListPage>
     </Box>
   );
 }

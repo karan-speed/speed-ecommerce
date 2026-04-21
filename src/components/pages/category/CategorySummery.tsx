@@ -1,6 +1,6 @@
 import { TableCell, TableRow } from "@mui/material";
 import type { CategoryColumnProps, TCategorySummery } from "../../../types";
-import Text from "../../common/Text";
+import Text from "../../common/Text/Text";
 import { renderDetailsField } from "../../constants";
 
 interface TCategorySats {

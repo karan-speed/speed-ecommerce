@@ -1,4 +1,4 @@
-import Box from "../../common/Box";
+import Box from "../../common/Box/Box";
 
 function Dashboard() {
   return (

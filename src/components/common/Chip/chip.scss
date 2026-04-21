@@ -1,0 +1,15 @@
+@use "../../../assets/default.scss" as *;
+
+.common-chip {
+  max-width: 100px !important;
+  border-radius: 4px !important;
+  .MuiChip-label {
+    font-family: $fontOutfitSemiBold;
+  }
+  &.product-spotlight-chip {
+    background-color: $greenishTeal;
+    color: $white;
+    max-width: 100px;
+    border-radius: 4px;
+  }
+}

@@ -1,9 +1,9 @@
 import { CardContent, Stack, CardMedia, CardActionArea } from "@mui/material";
 import type { TCategoryDetailProduct } from "../../../types";
-import CustomCard from "../../common/CustomCard";
-import Text from "../../common/Text";
+import Card from "../../common/Card/Card";
+import Text from "../../common/Text/Text";
 import { useNavigate } from "react-router-dom";
-import CustomChip from "../../common/CustomChip";
+import Chip from "../../common/Chip/Chip";
 
 interface ProductCardProps {
   product: TCategoryDetailProduct;
@@ -12,7 +12,7 @@ interface ProductCardProps {
 export default function ListCard({ product }: ProductCardProps) {
   const navigate = useNavigate();
   return (
-    <CustomCard
+    <Card
       onClick={() => navigate(`/products/${product.id}`)}
       customClass="category-product"
     >
@@ -38,14 +38,11 @@ export default function ListCard({ product }: ProductCardProps) {
             <Text variant="body2">Stock: {product.stock}</Text>
 
             {product.spotlight && (
-              <CustomChip
-                label="Spotlighted"
-                customClass="product-spotlight-chip"
-              />
+              <Chip label="Spotlighted" customClass="product-spotlight-chip" />
             )}
           </Stack>
         </CardContent>
       </CardActionArea>
-    </CustomCard>
+    </Card>
   );
 }

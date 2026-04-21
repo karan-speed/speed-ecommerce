@@ -58,3 +58,5 @@ export const addNewProduct = "Add New Product";
 export const list = "List";
 export const AUTH_ERRORS = ["No Token Provided", "Invalid access token"];
 export const SESSION_EXPIRE_ERRORS = ["refresh token expired", "jwt expired"];
+export const commonLoadingText = "Loading...";
+export const logOutLoadingText = "Logout...";

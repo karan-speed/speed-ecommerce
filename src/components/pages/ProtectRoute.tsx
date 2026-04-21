@@ -1,12 +1,11 @@
 import { Outlet, Navigate } from "react-router-dom";
-import Box from "../common/Box";
-import "../styles/public.scss";
+import Box from "../common/Box/Box";
 import { useAppSelector } from "../../redux/hooks";
 import type { IProtectRoute } from "../../types";
 import Header from "../Header";
 import Sidebar from "./admin/Sidebar";
 import { useEffect, useState } from "react";
-import PageLoader from "../common/PageLoader";
+import PageLoader from "../common/Loader/PageLoader";
 
 function ProtectRoute({ allowRoles }: IProtectRoute) {
   const { access_token, user } = useAppSelector((state) => state.auth);
@@ -37,25 +36,25 @@ function ProtectRoute({ allowRoles }: IProtectRoute) {
 
   return (
     <>
-      <Box className="app-root">
+      <Box customClass="app-root">
         <Header />
         {isAuthorizeForAdmin && (
           <Box
-            className="app-root-container"
+            customClass="app-root-container"
             sx={{ width: "100%", marginTop: "57px" }}
           >
             <Sidebar customClass="sidebar-closure" />
             <Box
               sx={{ width: `calc(100% - 250px)`, flex: 1, flexGrow: 1 }}
               component={"main"}
-              className="section-container"
+              customClass="section-container"
             >
               <Outlet />
             </Box>
           </Box>
         )}
         {isAuthorizeForUser && (
-          <Box className="app-root-container">
+          <Box customClass="app-root-container">
             <Header />
             <Outlet />
           </Box>

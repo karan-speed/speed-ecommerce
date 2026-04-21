@@ -1,21 +1,22 @@
-import { useParams } from "react-router-dom";
-import Box from "../../common/Box";
-import DetailsHeader from "./ProductDetailsHeader";
+import { useNavigate, useParams } from "react-router-dom";
+import Box from "../../common/Box/Box";
+import DetailsHeader from "./Header/ProductDetailsHeader";
 import { CallAPIInterface, productAllDetailColumns } from "../../constants";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import DataTable from "../../common/DataTable";
+import DataTable from "../../common/Table/DataTable";
 import {
   DetailsSection,
   MediaSection,
   ThumbnailSection,
 } from "../../common/Section";
 import type { TProduct } from "../../../types";
-import { setProduct } from "../../../redux/features/product/product.slice";
+import { setProduct } from "../../../redux/product/product.slice";
 
 function ProductDetails() {
   const { id } = useParams();
-  if (!id) return;
+  const navigate = useNavigate();
+  if (!id) navigate(-1);
   const product = useAppSelector((state) => state.product.selectedProduct);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();

@@ -2,20 +2,20 @@ import { useEffect } from "react";
 import { CallAPIInterface, categoryAllSatsColumns } from "../../constants";
 import { useParams } from "react-router-dom";
 import type { TCategoryDetails } from "../../../types";
-import Box from "../../common/Box";
+import Box from "../../common/Box/Box";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { setCategoryDetails } from "../../../redux/features/category/category.slice";
-import Text from "../../common/Text";
-import DataTable from "../../common/DataTable";
+import { setCategoryDetails } from "../../../redux/category/category.slice";
+import Text from "../../common/Text/Text";
+import DataTable from "../../common/Table/DataTable";
 import CategorySummery from "./CategorySummery";
 import CategoryProductList from "./CategoryProductList";
-import { list } from "../../messages";
+import CategoryDetailsHeader from "./CategoryDetailsHeader";
 
 function CategoryDetails() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const details = useAppSelector((state) => state.category.categoryDetails);
-  const categoryListHandler = async () => {
+  const getCategoryDetails = async () => {
     try {
       const data = await CallAPIInterface<TCategoryDetails>({
         method: "GET",
@@ -38,17 +38,17 @@ function CategoryDetails() {
   };
 
   useEffect(() => {
-    categoryListHandler();
+    getCategoryDetails();
   }, []);
 
   return (
     <Box customClass="category-detail-wrapper">
+      <CategoryDetailsHeader data={details.name} previousNavlink="categories" />
       <Box customClass="details-sats-content">
         <Text customClass="font28 font-SemiBold">{details.name}</Text>
         <DataTable customClass="category-details-table">
           <CategorySummery config={config.summery} data={satsDetails} />
         </DataTable>
-
         <CategoryProductList data={details.products} />
       </Box>
     </Box>

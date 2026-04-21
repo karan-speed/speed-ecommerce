@@ -1,42 +1,22 @@
-//  <Table className={classes}>
-//       <TableBody>
-//         <TableRow>
-//           <TableCell>
-//             <Text customClass="font28 border-bottom">Details</Text>
-//           </TableCell>
-//         </TableRow>
-//         {productAllDetailColumns[0].details.map((col) => (
-//           <TableRow key={String(col.key)}>
-//             <TableHead sx={{ fontWeight: 600 }}>
-//               <TableCell component={"td"}>{col.label}</TableCell>
-//             </TableHead>
+import { createTheme } from "@mui/material";
 
-//             <TableCell>
-//               {col.render
-//                 ? col.render(data)
-//                 : Array.isArray(data[col.key as keyof Product])
-//                   ? JSON.stringify(data[col.key as keyof Product])
-//                   : (data[col.key as keyof Product] as any)}
-//             </TableCell>
-//           </TableRow>
-//         ))}
+export const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#2a67ff",
+    },
+    text: {
+      primary: "#0a193e",
+    },
+  },
 
-//         <TableRow>
-//           <TableCell>
-//             <Text customClass="font28 border-bottom">Images</Text>
-//           </TableCell>
-//         </TableRow>
-
-//         {productAllDetailColumns[0].images.map((col) => (
-//           <TableRow key={String(col.key)}>
-//             <TableCell>
-//               {col.render
-//                 ? col.render(data)
-//                 : Array.isArray(data[col.key as keyof Product])
-//                   ? JSON.stringify(data[col.key as keyof Product])
-//                   : (data[col.key as keyof Product] as any)}
-//             </TableCell>
-//           </TableRow>
-//         ))}
-//       </TableBody>
-//     </Table>
+  components: {
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          fontFamily: "Outfit-Regular",
+        },
+      },
+    },
+  },
+});
