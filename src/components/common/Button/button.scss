@@ -1,0 +1,125 @@
+@use "../../../assets/default.scss" as *;
+
+.common-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 30px;
+  height: 54px;
+  padding: 8px 10px;
+  text-decoration: none !important;
+  color: $darkIndigo;
+  text-transform: none !important;
+  border: 1px solid transparent;
+  box-shadow:
+    0 4px 4px -2px rgba(11, 37, 75, 0.12),
+    0 0 0 1px rgba(11, 37, 75, 0.08);
+
+  font-size: 16px;
+  line-height: 1;
+  &.fullscreen-action-button {
+    width: 200px;
+    background-color: #2a67ff;
+    color: white;
+  }
+  &.button-with-icon {
+    min-width: 30px !important;
+    min-height: 20px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    box-shadow: none;
+  }
+  &.dots {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-shadow: none;
+    .MuiButton-startIcon {
+      margin: 0;
+      width: 30px;
+      height: 30px;
+      svg {
+        font-size: 28px;
+      }
+    }
+  }
+  &.logout {
+    width: 30px;
+    height: 35px;
+    box-shadow: none;
+  }
+  &.default-user {
+    box-shadow: none;
+    min-width: 54px;
+    margin-top: -6px;
+  }
+
+  &.setting {
+    width: 30px;
+    height: 35px;
+
+    box-shadow: none;
+  }
+
+  &.login-button {
+    background-color: $primaryBlue;
+    .common-button-text {
+      color: $white;
+      font-weight: 500 !important;
+      font-family: $fontOutfitSemiBold !important;
+    }
+    .MuiButton-icon {
+      color: $white;
+    }
+  }
+
+  &.Mui-disabled {
+    .MuiTypography-root {
+      font-weight: 500 !important;
+      font-family: $fontOutfitSemiBold !important;
+    }
+    background-color: $lightGrey !important;
+    font-family: $fontOutfitSemiBold !important;
+    text-transform: none !important;
+    color: $white !important;
+  }
+
+  &.MuiButton-outlinedPrimary {
+    border: 1px solid #2a67ff;
+    color: #2a67ff !important;
+  }
+  &.button-create-submit {
+    background-color: #2a67ff;
+    .MuiTypography-root {
+      color: white;
+      font-family: $fontOutfitSemiBold;
+      font-size: $font18;
+    }
+    padding: 16px 22px;
+    display: flex;
+    width: 100%;
+    height: 36px;
+  }
+  &.button-create-unarchive {
+    padding: 8px 10px;
+    display: flex;
+    width: 150px;
+    height: 36px;
+    .MuiTypography-root {
+      font-size: 16px;
+      font-family: $fontOutfitSemiBold;
+    }
+  }
+  &.button-create {
+    padding: 8px 10px;
+    display: flex;
+    width: 100%;
+    height: 36px;
+    .MuiTypography-root {
+      font-size: 14px;
+      font-family: $fontOutfitSemiBold;
+    }
+  }
+}

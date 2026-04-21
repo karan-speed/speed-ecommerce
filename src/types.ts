@@ -81,6 +81,7 @@ export interface ProductImages {
 
 export interface InputProps extends InputBaseProps {
   customClass?: string;
+  isFileInput?: boolean;
   elementClass?: string;
   showLabel?: boolean;
   label?: string;
@@ -88,7 +89,7 @@ export interface InputProps extends InputBaseProps {
   isError?: boolean;
   isPasswordVisible?: boolean;
   error?: boolean;
-  helperText?: string | boolean | undefined;
+  helperText?: string;
   value?: string | number;
 }
 
@@ -104,6 +105,9 @@ export interface TUserRegister {
   email: string;
   role: string;
 }
+export type TCategoryForm = {
+  name: string;
+};
 export interface TUserLogin {
   user: {
     id: string;
@@ -143,15 +147,13 @@ export type MenuItem = {
 export interface IProtectRoute {
   allowRoles: "USER" | "ADMIN";
 }
-export interface PageModuleProps {
-  title?: string;
+export interface EntityListProps {
+  entity?: string;
   description?: string;
-  buttonLable?: string;
+  buttonLabel?: string;
   children?: React.ReactNode;
   columns?: any[];
-  onCreate?: () => void;
-  onUpdate?: (item: any) => void;
-  renderDetails?: (item: any) => void;
+  onSubmit?: () => void;
 }
 
 export interface ProductImage {

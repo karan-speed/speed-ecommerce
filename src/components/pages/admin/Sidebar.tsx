@@ -1,8 +1,8 @@
-import "../../styles/Sidebar.scss";
-import Box from "../../common/Box";
+import "../../../styles/Sidebar.scss";
+import Box from "../../common/Box/Box";
 import { Drawer, CardContent } from "@mui/material";
 import classNames from "classnames";
-import Item from "../../common/Item";
+import Item from "../../common/Item/Item";
 import type { MenuItem } from "../../../types";
 import { DashboardIcon, ProductIcon } from "../../constants";
 import { buttonIcons } from "../../images";
@@ -13,19 +13,8 @@ interface ISidebarProps {
 }
 function Sidebar({ customClass }: ISidebarProps) {
   const classess = classNames(`sidebar-wrapper ${customClass}`);
-  const [expanded, setExpanded] = useState<string | false>(false);
+  const [expanded, setExpanded] = useState<string | boolean>(false);
   const menuItems: MenuItem[] = [
-    {
-      type: "item",
-      text: "Admin",
-      icon: buttonIcons.admin,
-      path: "/admin",
-    },
-    {
-      type: "item",
-      text: "Memo",
-      path: "/temperory",
-    },
     {
       type: "item",
       text: "Dashboard",
@@ -44,18 +33,23 @@ function Sidebar({ customClass }: ISidebarProps) {
       icon: <ProductIcon />,
       path: "/products",
     },
+    {
+      type: "item",
+      text: "Ref",
+      path: "/ref",
+    },
   ];
   return (
     <>
-      <Box className="sidebar-container" component={"nav"} width={"250px"}>
+      <Box className="sidebar-container" component={"nav"} width={250}>
         <Drawer variant="permanent" className={classess}>
-          <Box sx={{ padding: "10px 12px", height: "100%" }}>
+          <Box customClass="sidebar-content">
             {menuItems.map((item) => (
               <CardContent key={item.text} className="main-menu-item">
                 <Item
                   item={item}
                   expanded={expanded}
-                  setExpanded={setExpanded}
+                  setExpanded={() => setExpanded(!expanded)}
                 />
               </CardContent>
             ))}

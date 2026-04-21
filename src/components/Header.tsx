@@ -1,4 +1,4 @@
-import "./styles/Header.scss";
+import "../styles/Header.scss";
 import { useAppSelector } from "../redux/hooks";
 import AdminHeader from "./pages/admin/AdminHeader";
 import UserHeader from "./pages/users/UserHeader";

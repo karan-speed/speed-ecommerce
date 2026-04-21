@@ -1,11 +1,8 @@
-import Input from "../../common/Input";
+import Input from "../../common/Input/Input";
 import { useFormik } from "formik";
-import Dialog from "../../common/Dialog";
 import { array, object, string } from "yup";
 import { CallAPIInterface } from "../../constants";
-import Button from "../../common/Button";
 import {
-  addImages,
   CATEGORY_REQUIRED_MESSAGE,
   DESCRIPTION_REQUIRED_MESSAGE,
   NAME_REQUIRED_MESSAGE,
@@ -13,11 +10,10 @@ import {
   STOCK_REQUIRED_MESSAGE,
   THUMBNAIL_REQUIRED_MESSAGE,
 } from "../../messages";
-import { useEffect, useState } from "react";
-import Box from "../../common/Box";
-import { IconButton, MenuItem } from "@mui/material";
-import { buttonIcons } from "../../images";
-import SelectData from "../../common/SelectData";
+import { useEffect } from "react";
+import Box from "../../common/Box/Box";
+import { MenuItem } from "@mui/material";
+import SelectData from "../../common/Select/Select";
 import {
   mapProductResponseToForm,
   type IProductForm,
@@ -29,12 +25,11 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   addProduct,
   updateProduct,
-} from "../../../redux/features/product/product.slice";
-import {
-  hideLoader,
-  showLoader,
-} from "../../../redux/features/loader/loader.slice";
-import { setCategories } from "../../../redux/features/category/category.slice";
+} from "../../../redux/product/product.slice";
+import { hideLoader, showLoader } from "../../../redux/loader/loader.slice";
+import { setCategories } from "../../../redux/category/category.slice";
+import Modal from "../../common/Modal/Modal";
+import FileUpload from "../../common/FileUpload";
 
 interface IProductFormProps {
   isOpen: boolean;
@@ -49,21 +44,22 @@ export default function ProductForm({
   onClose,
   onSuccess,
   initialData,
+
   isEdit = false,
 }: IProductFormProps) {
-  const [addImagesClicked, setAddImagesClicked] = useState(false);
-
   const categories = useAppSelector((state) => state.category.categories);
   const dispatch = useAppDispatch();
-  const handleGetCategory = async () => {
+  const productImages = useAppSelector(
+    (state) => state.product.selectedProduct?.images,
+  );
+  const getCategories = async () => {
     try {
-      dispatch(showLoader());
+      dispatch(showLoader({}));
       const data = await CallAPIInterface<TCategoryList[]>({
         method: "GET",
         url: "/categories",
         isPrivate: true,
       });
-
       dispatch(setCategories(data));
     } catch (error) {
       console.error(error);
@@ -74,7 +70,7 @@ export default function ProductForm({
 
   const createHandler = async () => {
     try {
-      dispatch(showLoader());
+      dispatch(showLoader({}));
       const product: IProductForm = {
         category_id: String(values.category_id),
         name: values.name,
@@ -101,7 +97,7 @@ export default function ProductForm({
   };
   const updateHandler = async () => {
     try {
-      dispatch(showLoader());
+      dispatch(showLoader({}));
       const product: IProductForm = {
         category_id: String(values.category_id),
         name: values.name,
@@ -166,28 +162,16 @@ export default function ProductForm({
     validationSchema: productSchema,
     onSubmit: isEdit ? updateHandler : createHandler,
   });
-  const addImageHandler = () => {
-    setAddImagesClicked(true);
-    setFieldValue("images", [...values.images, { url: "" }]);
-  };
-  const removeImageHandler = (index: number) => {
-    const newImages = values.images.filter((_, i) => i !== index);
-    setFieldValue("images", newImages);
-  };
+
   const setCategoryValue = (e: any) => {
     setFieldValue("category_id", String(e.target.value));
   };
   useEffect(() => {
     if (isOpen) {
-      handleGetCategory();
+      getCategories();
     }
   }, [isOpen]);
   const disabled = isEdit ? !isValid : !dirty || !isValid;
-  useEffect(() => {
-    if (isEdit && initialData?.images?.length) {
-      setAddImagesClicked(true);
-    }
-  }, [isEdit, initialData]);
   useEffect(() => {
     if (isEdit && initialData && categories.length > 0) {
       setFieldValue("category_id", initialData.category?.id || "");
@@ -195,17 +179,29 @@ export default function ProductForm({
   }, [categories, initialData]);
   return (
     <>
-      <Dialog
-        disabled={disabled}
-        title={isEdit ? "Edit Product" : "Add New Product"}
-        customClass={isEdit ? "product-edit-modal" : "product-create-modal"}
-        open={isOpen}
-        submitButtonLabel={"Save"}
+      <Modal
         isForm={true}
-        handleSubmit={handleSubmit}
-        handleClose={onClose}
+        disabled={disabled}
+        variant={isEdit ? "default" : "fullscreen"}
+        title={isEdit ? "Edit Product" : "Add New Product"}
+        customClass={
+          isEdit
+            ? "product-edit-modal"
+            : "product-create-modal fullscreen-modal"
+        }
+        open={isOpen}
+        actionButtonLabel={isEdit ? "Save" : "Create"}
+        onSubmit={handleSubmit}
+        onClose={onClose}
       >
         <Box>
+          {!isEdit && (
+            <FileUpload
+              title="Product Photo"
+              description="Upload JPEG or PNG Image should be less than 2 mb"
+              id="image_upload"
+            />
+          )}
           <SelectData
             name="category_id"
             onBlur={handleBlur}
@@ -216,7 +212,7 @@ export default function ProductForm({
             onChange={setCategoryValue}
             variant="outlined"
             autoWidth
-            customClass="category-select-wrapper"
+            customClass={`category-select-wrapper ${!isEdit ? " modal-select" : ""}`}
           >
             {categories.length > 0 &&
               categories.map((data) => (
@@ -238,21 +234,24 @@ export default function ProductForm({
         <Input
           name="name"
           id="name"
+          elementClass={`${!isEdit && "modal-input"}`}
           value={values.name}
           error={touched.name && Boolean(errors.name)}
-          helperText={touched.name && errors.name}
+          helperText={touched.name ? errors.name : undefined}
           onChange={handleChange}
           onBlur={handleBlur}
+          customClass="modal-input"
           label="Product Name"
           placeholder="Enter Product Name"
-          showLabel
+          showLabel={true}
         />
         <Input
           name="price"
+          elementClass={`${!isEdit && "modal-input"}`}
           id="price"
           value={values.price}
           error={touched.price && Boolean(errors.price)}
-          helperText={touched.price && errors.price}
+          helperText={touched.price ? errors.price : undefined}
           onChange={handleChange}
           onBlur={handleBlur}
           label="Product Price"
@@ -262,9 +261,10 @@ export default function ProductForm({
         <Input
           name="stock"
           id="stock"
+          elementClass={`${!isEdit && "modal-input"}`}
           value={values.stock}
           error={touched.stock && Boolean(errors.stock)}
-          helperText={touched.stock && errors.stock}
+          helperText={touched.stock ? errors.stock : undefined}
           onChange={handleChange}
           onBlur={handleBlur}
           label="Product Stock"
@@ -273,10 +273,11 @@ export default function ProductForm({
         />
         <Input
           name="description"
+          elementClass={`${!isEdit && "modal-input"}`}
           id="description"
           value={values.description}
           error={touched.description && Boolean(errors.description)}
-          helperText={touched.description && errors.description}
+          helperText={touched.description ? errors.description : undefined}
           onChange={handleChange}
           onBlur={handleBlur}
           label="Product Description"
@@ -285,9 +286,10 @@ export default function ProductForm({
         />
         <Input
           name="thumbnail"
+          elementClass={`${!isEdit && "modal-input"}`}
           id="thumbnail"
           error={touched.thumbnail && Boolean(errors.thumbnail)}
-          helperText={touched.thumbnail && errors.thumbnail}
+          helperText={touched.thumbnail ? errors.thumbnail : undefined}
           value={values.thumbnail}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -295,48 +297,7 @@ export default function ProductForm({
           placeholder="Enter Product Thumbnail"
           showLabel
         />
-
-        <Button
-          onClick={addImageHandler}
-          customClass="button-create"
-          variant="outlined"
-          size="medium"
-          label={addImages}
-          iconPosition="start"
-          icon={"add"}
-        />
-        {(addImagesClicked || isEdit) &&
-          values.images.map((image, index) => (
-            <Box key={index} customClass="image-input-wrapper">
-              <Input
-                elementClass="mt-15"
-                name={`images[${index}].url`}
-                id={`images[${index}].url`}
-                value={image.url}
-                onChange={(e) => {
-                  const newImages = [...values.images];
-                  newImages[index].url = e.target.value;
-                  setFieldValue("images", newImages);
-                }}
-                onBlur={handleBlur}
-                label={`Product Image ${index + 1}`}
-                placeholder="Enter Product Images URL"
-                showLabel
-              />
-              {values.images.length > 0 && (
-                <IconButton
-                  onClick={() => removeImageHandler(index)}
-                  sx={{
-                    border: "1px solid #e4e9ee",
-                    marginBottom: "-8px",
-                  }}
-                >
-                  {buttonIcons.close}
-                </IconButton>
-              )}
-            </Box>
-          ))}
-      </Dialog>
+      </Modal>
     </>
   );
 }

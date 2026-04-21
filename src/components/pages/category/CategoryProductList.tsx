@@ -1,7 +1,7 @@
 import type { TCategoryDetailProduct } from "../../../types";
 import ListCard from "../product/ListCard";
-import CustomGrid from "../../common/CustomGrid";
-import Text from "../../common/Text";
+import CustomGrid from "../../common/Grid/Grid";
+import Text from "../../common/Text/Text";
 import { list } from "../../messages";
 
 interface CategoryProductList {

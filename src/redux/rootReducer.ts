@@ -1,11 +1,11 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import AuthReducer from "./features/persisted/auth/auth.slice";
-import CartReducer from "./features/persisted/cart/cart.slice";
-import AddressReducer from "./features/persisted/adress/address.slice";
-import CategoryReducer from "./features/category/category.slice";
-import { ToastReducer } from "./features/error/error.slice";
-import { LoaderReducer } from "./features/loader/loader.slice";
-import { productReducer } from "./features/product/product.slice";
+import AuthReducer from "./persisted/auth/auth.slice";
+import CartReducer from "./persisted/cart/cart.slice";
+import AddressReducer from "./persisted/adress/address.slice";
+import CategoryReducer from "./category/category.slice";
+import { ToastReducer } from "./error/error.slice";
+import { LoaderReducer } from "./loader/loader.slice";
+import { productReducer } from "./product/product.slice";
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
